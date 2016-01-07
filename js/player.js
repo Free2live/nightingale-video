@@ -1,5 +1,7 @@
 var player
-,   elem = document.body;
+,   elem = document.body
+,   playPause = $('#controls__play_pause')
+,   seekSlider = $('#seekslider');
 
 function onYouTubePlayerAPIReady() {
   
@@ -92,28 +94,23 @@ function onPlayerStateChange(event){
 
   if (event.data == YT.PlayerState.PLAYING) {
 
-    var totalDuration = player.getDuration();
+    var totalDuration = player.getDuration()
+    ,   updateTimer = setInterval(function() {
 
-    console.log('duration of video '+totalDuration);
+      var currentTime = player.getCurrentTime()
+      ,   thumbVlaue = currentTime * (100 / totalDuration);
 
-    updateTimer = setInterval(function() {
+      seekSlider.value = thumbVlaue;
 
-      var currentTime = player.getCurrentTime();
-
-      console.log('current position '+currentTime);
-
-    //   var playerTimeDifference = (playerCurrentTime / playerTotalTime) * 100;
-
-    //   progress(playerTimeDifference, $('#progressBar'));
 
     }, 1000);
 
-    $('#controls__play_pause').toggleClass('active');
+    playPause.toggleClass('active');
 
   } else {
     
     clearTimeout(updateTimer);
 
-    $('#controls__play_pause').toggleClass('active');
+    playPause.toggleClass('active');
   }
 }
