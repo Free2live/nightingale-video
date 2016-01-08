@@ -1,6 +1,6 @@
 (function($) {
 
-    "use strict"; // Start of use strict
+    "use strict";
 
     // Load the IFrame Player API code asynchronously.
 	var tag = document.createElement('script')

@@ -1,16 +1,19 @@
 var player
+,   _videoId = 'H6SsB3JYqQg'
 ,   elem = document.body
 ,   playPause = $('#controls__play_pause')
 ,   seekSlider = $('#seekslider')
 ,   totalDuration
-,   updateTimer;
+,   updateTimer
+,   availableQuality;
 
 function onYouTubePlayerAPIReady() {
   
+  // Initialise YTPlayer
   player = new YT.Player('ytplayer', {
   	width: '100%',
   	height: '100%',
-    videoId: 'H6SsB3JYqQg',
+    videoId: _videoId,
     playerVars: {
     	autoplay: 1,
     	enablejsapi: 1,
@@ -25,6 +28,10 @@ function onYouTubePlayerAPIReady() {
     }
   });
 
+  // Add event listener to the video seek slider
+  seekSlider.on('change', videoSeek);
+
+  // Set up custom player controls
   $('.controls__control').bind('click', function(){
 
     var _id = $(this).attr('id');
@@ -65,10 +72,15 @@ function onYouTubePlayerAPIReady() {
 
   });
 
-  seekSlider.on('change', videoSeek);
+  $('#controls__quality-container').bind('click', function(){
+
+      // $(this).find('#controls__video_quality--centre').animate({width: '+=400'}, 500);
+      $(this).find('#controls__video_quality--centre').toggleClass('active');
+  });
 
 }
 
+// Fullscreen functionality
 function requestFullScreen(element) {
 
     var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
@@ -83,9 +95,27 @@ function requestFullScreen(element) {
     }
 }
 
+// Video seek functionality
+function videoSeek(){
+
+  clearTimeout(updateTimer);
+  var seekValue = player.getDuration() * (seekSlider.val() / 100);
+  player.seekTo(seekValue);
+
+}
+
+//YT events
 function onPlayerReady(event){}
 
 function onPlayerStateChange(event){
+
+  // console.log('available quality: '+player.getAvailableQualityLevels());
+  // console.log('current quality: '+player.getPlaybackQuality());
+
+  //Request available qualities
+  availableQuality = player.getAvailableQualityLevels();
+
+  console.log(availableQuality);
 
   if (event.data == YT.PlayerState.PLAYING) {
 
@@ -97,7 +127,7 @@ function onPlayerStateChange(event){
 
       seekSlider.val(thumbValue);
 
-    }, 1000);
+    }, 800);
 
   } else {
     
@@ -105,12 +135,4 @@ function onPlayerStateChange(event){
   }
 
   playPause.toggleClass('active');
-}
-
-function videoSeek(){
-
-  clearTimeout(updateTimer);
-  var seekValue = player.getDuration() * (seekSlider.val() / 100);
-  player.seekTo(seekValue);
-  
 }
