@@ -1,7 +1,9 @@
 var player
 ,   elem = document.body
 ,   playPause = $('#controls__play_pause')
-,   seekSlider = $('#seekslider');
+,   seekSlider = $('#seekslider')
+,   totalDuration
+,   updateTimer;
 
 function onYouTubePlayerAPIReady() {
   
@@ -63,15 +65,8 @@ function onYouTubePlayerAPIReady() {
 
   });
 
-}
+  seekSlider.on('change', videoSeek);
 
-function progress(percent, element) {
-
-  var progressBarWidth = percent * element.width() / 100;
-
-// element.find('div').animate({ width: progressBarWidth }, 500).html(percent + "%&nbsp;");
-
-  element.find('div').animate({ width: progressBarWidth });
 }
 
 function requestFullScreen(element) {
@@ -94,23 +89,28 @@ function onPlayerStateChange(event){
 
   if (event.data == YT.PlayerState.PLAYING) {
 
-    var totalDuration = player.getDuration()
-    ,   updateTimer = setInterval(function() {
+    totalDuration = player.getDuration()
+    updateTimer = setInterval(function() {
 
       var currentTime = player.getCurrentTime()
-      ,   thumbVlaue = currentTime * (100 / totalDuration);
+      ,   thumbValue = currentTime * (100 / totalDuration);
 
-      seekSlider.value = thumbVlaue;
-
+      seekSlider.val(thumbValue);
 
     }, 1000);
-
-    playPause.toggleClass('active');
 
   } else {
     
     clearTimeout(updateTimer);
-
-    playPause.toggleClass('active');
   }
+
+  playPause.toggleClass('active');
+}
+
+function videoSeek(){
+
+  clearTimeout(updateTimer);
+  var seekValue = player.getDuration() * (seekSlider.val() / 100);
+  player.seekTo(seekValue);
+  
 }
