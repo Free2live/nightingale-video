@@ -116,9 +116,9 @@ input[type=range]::-webkit-slider-thumb {
 	cursor: pointer;
 	margin-top: -14px;
 	border-radius: 50%;
-	-webkit-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
-	-moz-box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
-	box-shadow: 0px 0px 30px 0px rgba(0,0,0,0.75);
+	-webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
 }
 
 /* All the same stuff for Firefox */
@@ -204,18 +204,26 @@ input[type=range]::-moz-range-track {
 	cursor: pointer;
 }
 
+#controls__quality-container__display{
+
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 41px;
+	height: 41px;
+	background: url(../img/icons/controls/video-quality.png) top left no-repeat;
+}
+
+#controls__quality-container__display.active{
+
+	background-image: url(../img/icons/controls/v-quality-close.png);
+}
+
 #controls__quality-container > .controls__control{
 
 	height: 40px;
     width: 20px;
     margin: 0;
-}
-
-#controls__quality-container > img{
-
-	position: absolute;
-	top: 0;
-	right: 0;
 }
 
 #controls__video_quality--left{

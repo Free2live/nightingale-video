@@ -6,8 +6,9 @@ var player
 ,   totalDuration
 ,   updateTimer
 ,   availableQuality
-,   controlsWrapper = $('#controls__video_quality--centre')
-,   controlsList = controlsWrapper.find('ul');
+,   controlsContainer = $('#controls__video_quality--centre')
+,   controlsList = controlsContainer.find('ul')
+,   controlsDisplay = $('#controls__quality-container__display');
 
 function onYouTubePlayerAPIReady() {
   
@@ -26,7 +27,8 @@ function onYouTubePlayerAPIReady() {
     },
     events: {
       'onReady': onPlayerReady,
-      'onStateChange': onPlayerStateChange
+      'onStateChange': onPlayerStateChange,
+      'onPlaybackQualityChange': onPlaybackQualityChange
     }
   });
 
@@ -58,6 +60,8 @@ function onYouTubePlayerAPIReady() {
             player.mute();
         }
 
+        $(this).toggleClass('active');
+
       break;
 
       case 'controls__toggle_fs':
@@ -67,16 +71,23 @@ function onYouTubePlayerAPIReady() {
       break;
     }
 
-    if(_id == "controls__toggle_mute"){
-
-      $(this).toggleClass('active');
-    }
-
   });
 
-  $('#controls__quality-container > img').bind('click', function(){
+  $('#controls__quality-container__display').bind('click', function(){
 
-      controlsWrapper.toggleClass('active').find('ul').delay(500).fadeIn(500);
+      if(!controlsContainer.hasClass('active')){
+
+        controlsContainer.toggleClass('active').find('ul').delay(500).fadeIn(500);
+
+      }else{
+
+        controlsList.fadeOut(100, function(){
+
+          controlsContainer.toggleClass('active');
+        });
+      }
+
+      controlsDisplay.toggleClass('active');
   });
 
 }
@@ -106,9 +117,14 @@ function videoSeek(){
 }
 
 // YT events
-function onPlayerReady(event){}
+function onPlayerReady(event){
+
+  event.target.setPlaybackQuality('default');
+}
 
 function onPlayerStateChange(event){
+
+  console.log('Current playback quallers: '+player.getPlaybackQuality());
 
   // Request available qualities and load into controls display
   // getAvailableQualityLevels is only available on playerStateChange so it's wrapped in an undefined check to run once only
@@ -118,13 +134,13 @@ function onPlayerStateChange(event){
 
     $.each(availableQuality, function(index, value){
 
-       controlsList.append('<li data-quality="'+ value +'">'+ value +'</li>');
+       controlsList.append('<li data-quality="'+ value +'">'+ value +'</li>').find('li:eq('+ index +')').bind('click', function(event){
 
-       // $(this).bind('click', function(event){
+        console.log('Requesting quality: ' + $(this).data('quality'));
 
-       //  player.setPlaybackQuality(this.data('quality'));
+        player.setPlaybackQuality($(this).data('quality'));
 
-       // });
+       });
 
     });
   }
@@ -150,4 +166,9 @@ function onPlayerStateChange(event){
   }
 
   playPause.toggleClass('active');
+}
+
+function onPlaybackQualityChange(event){
+
+  console.log('Quallers changed!');
 }
