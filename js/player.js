@@ -5,7 +5,9 @@ var player
 ,   seekSlider = $('#seekslider')
 ,   totalDuration
 ,   updateTimer
-,   availableQuality;
+,   availableQuality
+,   controlsWrapper = $('#controls__video_quality--centre')
+,   controlsList = controlsWrapper.find('ul');
 
 function onYouTubePlayerAPIReady() {
   
@@ -72,10 +74,9 @@ function onYouTubePlayerAPIReady() {
 
   });
 
-  $('#controls__quality-container').bind('click', function(){
+  $('#controls__quality-container > img').bind('click', function(){
 
-      // $(this).find('#controls__video_quality--centre').animate({width: '+=400'}, 500);
-      $(this).find('#controls__video_quality--centre').toggleClass('active');
+      controlsWrapper.toggleClass('active').find('ul').delay(500).fadeIn(500);
   });
 
 }
@@ -104,21 +105,34 @@ function videoSeek(){
 
 }
 
-//YT events
+// YT events
 function onPlayerReady(event){}
 
 function onPlayerStateChange(event){
 
-  // console.log('available quality: '+player.getAvailableQualityLevels());
-  // console.log('current quality: '+player.getPlaybackQuality());
+  // Request available qualities and load into controls display
+  // getAvailableQualityLevels is only available on playerStateChange so it's wrapped in an undefined check to run once only
+  if(typeof availableQuality === 'undefined'){
 
-  //Request available qualities
-  availableQuality = player.getAvailableQualityLevels();
+    availableQuality = player.getAvailableQualityLevels();
 
-  console.log(availableQuality);
+    $.each(availableQuality, function(index, value){
 
+       controlsList.append('<li data-quality="'+ value +'">'+ value +'</li>');
+
+       // $(this).bind('click', function(event){
+
+       //  player.setPlaybackQuality(this.data('quality'));
+
+       // });
+
+    });
+  }
+
+  // If video playing...
   if (event.data == YT.PlayerState.PLAYING) {
 
+    // Get current vid duration and set up interval timer to move silder thumb along the track
     totalDuration = player.getDuration()
     updateTimer = setInterval(function() {
 
@@ -129,6 +143,7 @@ function onPlayerStateChange(event){
 
     }, 800);
 
+    // If not playing, kill the interval timer
   } else {
     
     clearTimeout(updateTimer);
