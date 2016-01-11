@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="css/bootstrap-theme.min.css">
         <link rel="stylesheet" type="text/css" href="//cloud.typography.com/7608432/626348/css/fonts.css" />
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/anims.css">
 
         <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
@@ -30,12 +31,15 @@
                 </div>
             </div>
         </div>
+        <div class="overlays" id="overlay__centre">
+          <p>Click and drag to explore in 360&deg;</p>
+        </div>
         <div class="overlays" id="overlay__bottom">
             <input id="seekslider" type="range" min="0" max="100" value="0" step="0.1">
             <div class="row">
                 <div class="col-xs-10">
                     <div id="controls">
-                        <div class="controls__control" id="controls__play_pause"></div><div class="controls__control" id="controls__toggle_mute"></div><div class="controls__control" id="controls__toggle_fs"></div><div id="controls__quality-container"><div id="controls__quality-container__display"></div><!-- <img id="quality-display" src="img/icons/controls/video-quality.png" alt="Select Quality"> --><div class="controls__control" id="controls__video_quality--left"></div><div id="controls__video_quality--centre"><ul></ul></div><div class="controls__control" id="controls__video_quality--right"></div></div>
+                        <div class="controls__control" id="controls__play_pause"><span class="ripple"></span></div><div class="controls__control" id="controls__toggle_mute"><span class="ripple"></span></div><div class="controls__control" id="controls__toggle_fs"><span class="ripple"></span></div><div id="controls__quality-container"><div id="controls__quality-container__display"></div><!-- <img id="quality-display" src="img/icons/controls/video-quality.png" alt="Select Quality"> --><div class="controls__control" id="controls__video_quality--left"></div><div id="controls__video_quality--centre"><ul></ul></div><div class="controls__control" id="controls__video_quality--right"></div></div>
                     </div>
                 </div>
                 <div class="col-xs-2">
