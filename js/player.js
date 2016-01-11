@@ -6,9 +6,11 @@ var player
 ,   totalDuration
 ,   updateTimer
 ,   availableQuality
+,   previousQualityState
 ,   controlsContainer = $('#controls__video_quality--centre')
 ,   controlsList = controlsContainer.find('ul')
-,   controlsDisplay = $('#controls__quality-container__display');
+,   controlsDisplay = $('#controls__quality-container__display')
+,   currentQualityHighlightColor = '#f44c02';
 
 function onYouTubePlayerAPIReady() {
   
@@ -73,11 +75,13 @@ function onYouTubePlayerAPIReady() {
 
   });
 
+  // Controls open / close button functionality
   $('#controls__quality-container__display').bind('click', function(){
 
       if(!controlsContainer.hasClass('active')){
 
-        controlsContainer.toggleClass('active').find('ul').delay(500).fadeIn(500);
+        controlsContainer.toggleClass('active');
+        controlsList.delay(500).fadeIn(500);
 
       }else{
 
@@ -124,20 +128,17 @@ function onPlayerReady(event){
 
 function onPlayerStateChange(event){
 
-  console.log('Current playback quallers: '+player.getPlaybackQuality());
-
   // Request available qualities and load into controls display
-  // getAvailableQualityLevels is only available on playerStateChange so it's wrapped in an undefined check to run once only
+  // getAvailableQualityLevels is only available on playerStateChange (this function and not onPlayerReady), so it's wrapped in an undefined check to run once only
   if(typeof availableQuality === 'undefined'){
 
     availableQuality = player.getAvailableQualityLevels();
 
     $.each(availableQuality, function(index, value){
 
-       controlsList.append('<li data-quality="'+ value +'">'+ value +'</li>').find('li:eq('+ index +')').bind('click', function(event){
+       controlsList.append('<li id="controls__video_quality__'+ value +'" data-quality="'+ value +'">'+ value +'</li>').find('li:eq('+ index +')').bind('click', function(event){
 
-        console.log('Requesting quality: ' + $(this).data('quality'));
-
+        previousQualityState = player.getPlaybackQuality();
         player.setPlaybackQuality($(this).data('quality'));
 
        });
@@ -165,10 +166,25 @@ function onPlayerStateChange(event){
     clearTimeout(updateTimer);
   }
 
+  // Store reference to previous quality to update the UI
+  previousQualityState = player.getPlaybackQuality();
+
+  // Update quality display in UI
+  updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor);
+
+  // Toggle play / pause
   playPause.toggleClass('active');
 }
 
 function onPlaybackQualityChange(event){
 
-  console.log('Quallers changed!');
+  updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor);
+
 }
+
+function updateQualityDisplay(previousQualityState, currentQuality, color){
+
+  $('#controls__video_quality__'+previousQualityState).css('color', '#ffffff');
+  $('#controls__video_quality__'+currentQuality).css('color', currentQualityHighlightColor);
+}
+
