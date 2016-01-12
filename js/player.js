@@ -1,5 +1,5 @@
 var player,
-_videoId = 'H6SsB3JYqQg',
+videoKey = 'H6SsB3JYqQg',
 elem = document.body,
 playPause = $('#controls__play_pause'),
 seekSlider = $('#seekslider'),
@@ -18,7 +18,7 @@ function onYouTubePlayerAPIReady() {
   player = new YT.Player('ytplayer', {
   	width: '100%',
   	height: '100%',
-    videoId: _videoId,
+    videoId: videoKey,
     playerVars: {
     	autoplay: 1,
     	enablejsapi: 1,
@@ -81,19 +81,22 @@ function onYouTubePlayerAPIReady() {
   // Controls open / close button functionality
   $('#controls__quality-container__display').bind('click', function(){
 
+      var activeElems = [controlsContainer, controlsDisplay];
+
       if(!controlsContainer.hasClass('active')){
 
-        controlsContainer.toggleClass('active');
-        controlsList.delay(500).fadeIn(500);
+        controlsContainer.css( "width", controlsList.width() + 10).find('ul').delay(500).fadeIn(500);
 
       }else{
 
         controlsList.fadeOut(100, function(){
-          controlsContainer.toggleClass('active');
+          controlsContainer.css( "width", '0px');
         });
       }
 
-      controlsDisplay.toggleClass('active');
+      $.each(activeElems, function(index, value){
+        $(this).toggleClass('active');
+      });
   });
 
 }
@@ -124,6 +127,7 @@ function requestFullScreen(element, active) {
 function videoSeek(){
 
   clearTimeout(updateTimer);
+
   var seekValue = player.getDuration() * (seekSlider.val() / 100);
   player.seekTo(seekValue);
 
