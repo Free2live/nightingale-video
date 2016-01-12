@@ -1,19 +1,19 @@
-var player
-,   _videoId = 'H6SsB3JYqQg'
-,   elem = document.body
-,   playPause = $('#controls__play_pause')
-,   seekSlider = $('#seekslider')
-,   totalDuration
-,   updateTimer
-,   availableQuality
-,   previousQualityState
-,   controlsContainer = $('#controls__video_quality--centre')
-,   controlsList = controlsContainer.find('ul')
-,   controlsDisplay = $('#controls__quality-container__display')
-,   currentQualityHighlightColor = '#f44c02';
+var player,
+_videoId = 'H6SsB3JYqQg',
+elem = document.body,
+playPause = $('#controls__play_pause'),
+seekSlider = $('#seekslider'),
+totalDuration,
+updateTimer,
+availableQuality,
+previousQualityState,
+controlsContainer = $('#controls__video_quality--centre'),
+controlsList = controlsContainer.find('ul'),
+controlsDisplay = $('#controls__quality-container__display'),
+currentQualityHighlightColor = '#f44c02';
 
 function onYouTubePlayerAPIReady() {
-  
+
   // Initialise YTPlayer
   player = new YT.Player('ytplayer', {
   	width: '100%',
@@ -39,7 +39,7 @@ function onYouTubePlayerAPIReady() {
 
   // Set up custom player controls
   $('.controls__control').bind('click', function(){
-    
+
     $(this).ripple();
 
     var _id = $(this).attr('id');
@@ -70,7 +70,8 @@ function onYouTubePlayerAPIReady() {
 
       case 'controls__toggle_fs':
 
-        requestFullScreen(elem);
+        requestFullScreen(elem, $(this).hasClass('active'));
+        $(this).toggleClass('active');
 
       break;
     }
@@ -88,7 +89,6 @@ function onYouTubePlayerAPIReady() {
       }else{
 
         controlsList.fadeOut(100, function(){
-
           controlsContainer.toggleClass('active');
         });
       }
@@ -99,9 +99,16 @@ function onYouTubePlayerAPIReady() {
 }
 
 // Fullscreen functionality
-function requestFullScreen(element) {
+function requestFullScreen(element, active) {
 
-    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
+    var requestMethod;
+
+    if(!active){
+      requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
+    } else {
+      element = document;
+      requestMethod = element.cancelFullScreen || element.webkitCancelFullScreen || element.mozCancelFullScreen || element.msExitFullscreen;
+    }
 
     if (requestMethod) {
         requestMethod.call(element);
@@ -152,11 +159,11 @@ function onPlayerStateChange(event){
   if (event.data == YT.PlayerState.PLAYING) {
 
     // Get current vid duration and set up interval timer to move silder thumb along the track
-    totalDuration = player.getDuration()
+    totalDuration = player.getDuration();
     updateTimer = setInterval(function() {
 
-      var currentTime = player.getCurrentTime()
-      ,   thumbValue = currentTime * (100 / totalDuration);
+      var currentTime = player.getCurrentTime(),
+      thumbValue = currentTime * (100 / totalDuration);
 
       seekSlider.val(thumbValue);
 
@@ -164,7 +171,7 @@ function onPlayerStateChange(event){
 
     // If not playing, kill the interval timer
   } else {
-    
+
     clearTimeout(updateTimer);
   }
 
@@ -191,28 +198,29 @@ function updateQualityDisplay(previousQualityState, currentQuality, color){
   $('#controls__video_quality__'+currentQuality).css('color', currentQualityHighlightColor);
 }
 
-// ripple function
+// Ripple function
+$.fn.ripple = function() {
 
-(function ($) {
-  $.fn.ripple = function() {
-    var $rip = $(this).find('.ripple');
-    var $cont = $rip.parent();
-    // get size of parent element
-    var $sz = (Math.max($cont.outerWidth(), $cont.outerHeight()));
-    // prep to animate da ting
-    $rip.addClass('animate');
+  var $rip = $(this).find('.ripple');
+  var $cont = $rip.parent();
+
+  // get size of parent element
+  var $sz = (Math.max($cont.outerWidth(), $cont.outerHeight()));
+
+  // prep to animate da ting
+  $rip.addClass('animate');
+  $rip.stop().animate({
+    // animation starts
+    opacity: 1,
+    width: $sz,
+    height: $sz
+  }, 150, 'easeOutQuad', function() {
+
+    // animation ends
     $rip.stop().animate({
-      // animation starts
-      opacity: 1,
-      width: $sz,
-      height: $sz
-    }, 150, 'easeOutQuad', function() {
-      // animation ends
-      $rip.stop().animate({
-        opacity: 0,
-      });
-      $rip.removeClass('animate');
+      opacity: 0,
     });
-  };
-}(jQuery));
 
+    $rip.removeClass('animate');
+  });
+};
