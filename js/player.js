@@ -107,8 +107,10 @@ function requestFullScreen(element, active) {
     var requestMethod;
 
     if(!active){
+
       requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
     } else {
+
       element = document;
       requestMethod = element.cancelFullScreen || element.webkitCancelFullScreen || element.mozCancelFullScreen || element.msExitFullscreen;
     }
@@ -149,7 +151,43 @@ function onPlayerStateChange(event){
 
     $.each(availableQuality, function(index, value){
 
-       controlsList.append('<li id="controls__video_quality__'+ value +'" data-quality="'+ value +'">'+ value +'</li>').find('li:eq('+ index +')').bind('click', function(event){
+        var subStr = "hd",
+            caseMatches = ['large', 'medium', 'small', 'tiny', 'auto'],
+            displayValue;
+
+        if (value.substring(0, subStr.length) === subStr) {
+
+          displayValue = (value.replace(subStr, "")) + 'HD';
+
+        }else if(caseMatches.indexOf(value) > -1){
+
+          switch (value) {
+            case 'large':
+              displayValue = '480p';
+              break;
+            case 'medium':
+              displayValue = '360p';
+              break;
+            case 'small':
+              displayValue = '240p';
+              break;
+            case 'tiny':
+              displayValue = '144p';
+              break;
+            case 'auto':
+              displayValue = 'Auto';
+              break;
+            default:
+              displayValue = value;
+              break;
+          }
+
+        }else{
+          
+            displayValue = value;
+        }
+
+       controlsList.append('<li id="controls__video_quality__'+ value +'" data-quality="'+ value +'">'+ displayValue +'</li>').find('li:eq('+ index +')').bind('click', function(event){
 
         previousQualityState = player.getPlaybackQuality();
         player.setPlaybackQuality($(this).data('quality'));
@@ -179,12 +217,11 @@ function onPlayerStateChange(event){
     clearTimeout(updateTimer);
   }
 
-
   // Store reference to previous quality to update the UI
   previousQualityState = player.getPlaybackQuality();
 
   // Update quality display in UI
-  updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor);
+  updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor, 'onPlayerStateChange');
 
   // Toggle play / pause
   playPause.toggleClass('active').ripple();
@@ -192,12 +229,16 @@ function onPlayerStateChange(event){
 
 function onPlaybackQualityChange(event){
 
-  updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor);
+  if(typeof previousQualityState !== 'undefined'){
+    updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor, 'onPlaybackQualityChange');
+  }
 
+  updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor, 'onPlaybackQualityChange');
 }
 
-function updateQualityDisplay(previousQualityState, currentQuality, color){
+function updateQualityDisplay(previousQualityState, currentQuality, color, _from){
 
+  // console.log('update quallers called: '+previousQualityState, currentQuality, color, currentQualityHighlightColor, _from);
   $('#controls__video_quality__'+previousQualityState).css('color', '#ffffff');
   $('#controls__video_quality__'+currentQuality).css('color', currentQualityHighlightColor);
 }
