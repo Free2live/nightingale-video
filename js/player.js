@@ -39,6 +39,8 @@ function onYouTubePlayerAPIReady() {
 
   // Set up custom player controls
   $('.controls__control').bind('click', function(){
+    
+    $(this).ripple();
 
     var _id = $(this).attr('id');
 
@@ -166,6 +168,7 @@ function onPlayerStateChange(event){
     clearTimeout(updateTimer);
   }
 
+
   // Store reference to previous quality to update the UI
   previousQualityState = player.getPlaybackQuality();
 
@@ -173,7 +176,7 @@ function onPlayerStateChange(event){
   updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor);
 
   // Toggle play / pause
-  playPause.toggleClass('active');
+  playPause.toggleClass('active').ripple();
 }
 
 function onPlaybackQualityChange(event){
@@ -187,4 +190,29 @@ function updateQualityDisplay(previousQualityState, currentQuality, color){
   $('#controls__video_quality__'+previousQualityState).css('color', '#ffffff');
   $('#controls__video_quality__'+currentQuality).css('color', currentQualityHighlightColor);
 }
+
+// ripple function
+
+(function ($) {
+  $.fn.ripple = function() {
+    var $rip = $(this).find('.ripple');
+    var $cont = $rip.parent();
+    // get size of parent element
+    var $sz = (Math.max($cont.outerWidth(), $cont.outerHeight()));
+    // prep to animate da ting
+    $rip.addClass('animate');
+    $rip.stop().animate({
+      // animation starts
+      opacity: 1,
+      width: $sz,
+      height: $sz
+    }, 150, 'easeOutQuad', function() {
+      // animation ends
+      $rip.stop().animate({
+        opacity: 0,
+      });
+      $rip.removeClass('animate');
+    });
+  };
+}(jQuery));
 
