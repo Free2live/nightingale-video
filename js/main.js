@@ -2,6 +2,8 @@
 
     "use strict";
 
+    PointerEventsPolyfill.initialize({});
+
     // Load the IFrame Player API code asynchronously.
 	var tag = document.createElement('script')
 	,   firstScriptTag = document.getElementsByTagName('script')[0];
