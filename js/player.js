@@ -168,7 +168,7 @@ Player = {
       break;
     }
 
-    if(!_id == 'controls__standard--play-pause'){
+    if(_id != 'controls__standard--play-pause'){
 
       $(this).toggleClass('active');
     }
