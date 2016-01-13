@@ -1,161 +1,181 @@
-var player,
-playerContainer = $('#ytwrapper'),
-videoKey = 'H6SsB3JYqQg',
-elem = document.body,
-playPause = $('#controls__play_pause'),
-seekSlider = $('#seekslider'),
-totalDuration,
-updateTimer,
-availableQuality,
-previousQualityState,
-controlsContainer = $('#controls__video_quality--centre'),
-controlsList = controlsContainer.find('ul'),
-controlsDisplay = $('#controls__quality-container__display'),
-currentQualityHighlightColor = '#f44c02';
+var s,
+    ytp,
+    availableQuality,
+    totalDuration,
+    updateTimer,
 
-function onYouTubePlayerAPIReady() {
+Player = {
 
-  // Initialise YTPlayer
-  player = new YT.Player('ytplayer', {
-  	width: '100%',
-  	height: '100%',
-    videoId: videoKey,
-    playerVars: {
-    	autoplay: 1,
-    	enablejsapi: 1,
-    	controls: 0,
-    	rel: 0,
-    	showinfo: 0,
-    	modestbranding: 1
-    },
-    events: {
-      'onReady': onPlayerReady,
-      'onStateChange': onPlayerStateChange,
-      'onPlaybackQualityChange': onPlaybackQualityChange
-    }
-  });
+  settings:{
 
-  // Add event listener to the video seek slider
-  seekSlider.on('change', videoSeek);
+    playerWrapper: '#yt-wrapper',
+    playerElem: 'yt-player',
+    playerWidth: '100%',
+    playerHeight: '100%',
+    videoKey: 'H6SsB3JYqQg',
+    autoPlay: 1,
+    enableYouTubeApi: 1,
+    enableControls: 0,
+    showPlayerInfo: 0,
+    showRelatedContent: 0,
+    enableModestBranding: 1,
+    standardPlayerControls: $('.controls__standard'),
+    exapandingPlayerControls: $('.controls__expanding'),
+    controlsContainer: $('#controls__expanding_centre'),
+    controlsList: $('#controls__expanding_centre ul'),
+    playPauseBtn: $('#controls__standard--play-pause'),
+    playerSeekSlider: $('#seekslider'),
+    currentQualityHighlightColor: '#f44c02'
+  },
 
-  // Set up custom player controls
-  $('.controls__control').bind('click', function(){
+  init: function(){
 
-    $(this).ripple();
+    s = this.settings;
 
-    var _id = $(this).attr('id');
-
-    switch(_id){
-
-      case 'controls__play_pause':
-
-        if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-            player.pauseVideo();
-        } else {
-            player.playVideo();
-        }
-
-      break;
-
-      case 'controls__toggle_mute':
-
-        if (player.isMuted()) {
-            player.unMute();
-        } else {
-            player.mute();
-        }
-
-        $(this).toggleClass('active');
-
-      break;
-
-      case 'controls__toggle_fs':
-
-        requestFullScreen(elem, $(this).hasClass('active'));
-        $(this).toggleClass('active');
-
-      break;
-    }
-
-  });
-
-  // Controls open / close button functionality
-  $('.controls__quality-container__display').bind('click', function(){
-
-      var activeElems = [controlsContainer, controlsDisplay];
-
-      if(!controlsContainer.hasClass('active')){
-
-        controlsContainer.css( "width", controlsList.width() + 10).find('ul').delay(500).fadeIn(500);
-
-      }else{
-
-        controlsList.fadeOut(100, function(){
-          controlsContainer.css( "width", '0px');
-        });
+    ytp = new YT.Player(s.playerElem, {
+        width: s.playerWidth,
+        height: s.playerHeight,
+        videoId: s.videoKey,
+        playerVars: {
+        autoplay: s.autoPlay,
+        enablejsapi: s.enableYouTubeApi,
+        controls: s.enableControls,
+        rel: s.showRelatedContent,
+        showinfo: s.showPlayerInfo,
+        modestbranding: s.enableModestBranding
+      },
+      events: {
+        'onReady': this.onPlayerReady,
+        'onStateChange': this.onPlayerStateChange,
+        'onPlaybackQualityChange': this.onPlaybackQualityChange
       }
+    });
 
-      $.each(activeElems, function(index, value){
-        $(this).toggleClass('active');
-      });
-  });
+    this.bindEvents();
+  },
 
-}
+  bindEvents: function(){
+    s.playerSeekSlider.on('change', this.videoSeek);
+    s.standardPlayerControls.on('click', this.onStandardPlayerControlsClick);
+    s.exapandingPlayerControls.on('click', this.onExapandingPlayerControlsClick);
+  },
 
-// Fullscreen functionality
-function requestFullScreen(element, active) {
+  onPlayerReady: function(event){
 
-    var requestMethod;
+    console.log('Player: Ready');
 
-    if(!active){
+    event.target.setPlaybackQuality('default');
+    TweenMax.to(s.playerWrapper, 1, {opacity: 1});
+  },
 
-      requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
+  onPlayerStateChange: function(event){
+
+    console.log('Player: State change event');
+
+    // Request available qualities and load into controls display
+    // getAvailableQualityLevels is only available on playerStateChange (this function and not onPlayerReady), so it's wrapped in an undefined check to run once only
+    if(typeof availableQuality === 'undefined'){
+      //Get available qualities
+      availableQuality = ytp.getAvailableQualityLevels();
+      Player.setAvailablePlaybackQualities(availableQuality);
+    }
+
+    // If video playing...
+    if (event.data == YT.PlayerState.PLAYING) {
+
+      // Get current vid duration and set up interval timer to move silder thumb along the track
+      totalDuration = ytp.getDuration();
+      updateTimer = setInterval(function() {
+
+        var currentTime = ytp.getCurrentTime(),
+        thumbValue = currentTime * (100 / totalDuration);
+
+        s.playerSeekSlider.val(thumbValue);
+
+      }, 800);
+
+    // If not playing, kill the interval timer
     } else {
 
-      element = document;
-      requestMethod = element.cancelFullScreen || element.webkitCancelFullScreen || element.mozCancelFullScreen || element.msExitFullscreen;
+      clearTimeout(updateTimer);
     }
 
-    if (requestMethod) {
-        requestMethod.call(element);
-    } else if (typeof window.ActiveXObject !== "undefined") {
-        var wscript = new ActiveXObject("WScript.Shell");
-        if (wscript !== null) {
-            wscript.SendKeys("{F11}");
+    // Store reference to previous quality to update the UI
+    previousQualityState = ytp.getPlaybackQuality();
+
+    // Update quality display in UI
+    Player.updateQualityDisplay(previousQualityState, ytp.getPlaybackQuality(), s.currentQualityHighlightColor);
+
+    // Toggle play / pause
+    s.playPauseBtn.toggleClass('active');//.ripple();
+  },
+
+  onPlaybackQualityChange: function(event){
+    console.log('Player: Quality change event');
+  },
+
+  onStandardPlayerControlsClick: function(){
+
+    console.log('Player: Standard control click (' + $(this).attr('id') + ')');
+
+    switch($(this).attr('id')){
+
+      case 'controls__standard--play-pause':
+
+        if (ytp.getPlayerState() == YT.PlayerState.PLAYING) {
+            ytp.pauseVideo();
+        } else {
+            ytp.playVideo();
         }
+
+      break;
+
+      case 'controls__standard--toggle-mute':
+
+        if (ytp.isMuted()) {
+            ytp.unMute();
+        } else {
+            ytp.mute();
+        }
+
+      break;
+
+      case 'controls__standard--fs':
+
+        Player.requestFullScreen($(this).hasClass('active'));
+
+      break;
     }
-}
 
-// Video seek functionality
-function videoSeek(){
+    $(this).toggleClass('active');
+  },
 
-  clearTimeout(updateTimer);
+  onExapandingPlayerControlsClick: function(){
 
-  var seekValue = player.getDuration() * (seekSlider.val() / 100);
-  player.seekTo(seekValue);
+    console.log('Player: expanding control click (' + $(this).attr('id') + ')');
 
-}
+    var _activeElems = [s.controlsContainer, s.exapandingPlayerControls];
 
-// YT events
-function onPlayerReady(event){
+    if(!s.controlsContainer.hasClass('active')){
 
-  console.log('Player ready');
-  event.target.setPlaybackQuality('default');
+      s.controlsContainer.css( "width", s.controlsList.width() + 10).find('ul').delay(500).fadeIn(500);
 
-  TweenMax.to(playerContainer, 1, {opacity: 1});
-}
+    }else{
 
-function onPlayerStateChange(event){
+      s.controlsList.fadeOut(100, function(){
+        s.controlsContainer.css( "width", '0px');
+      });
+    }
 
-  // Request available qualities and load into controls display
-  // getAvailableQualityLevels is only available on playerStateChange (this function and not onPlayerReady), so it's wrapped in an undefined check to run once only
-  if(typeof availableQuality === 'undefined'){
+    $.each(_activeElems, function(index, value){
+      $(this).toggleClass('active');
+    });
+  },
 
-    //Get available qualities
-    availableQuality = player.getAvailableQualityLevels();
+  setAvailablePlaybackQualities: function(qualityLevel){
 
     // Loop through available qualities
-    $.each(availableQuality, function(index, value){
+    $.each(qualityLevel, function(index, value){
 
         var subStr = "hd",
             caseMatches = ['large', 'medium', 'small', 'tiny', 'auto'],
@@ -199,80 +219,51 @@ function onPlayerStateChange(event){
         }
 
         // Insert li element into display list. Add the display values to the elem id and data attr. outputValue is displayed to user.
-        controlsList.append('<li id="controls__video_quality__'+ value +'" data-quality="'+ value +'">'+ outputValue +'</li>').find('li:eq('+ index +')').bind('click', function(event){
+        s.controlsList.append('<li id="controls__video_quality__'+ value +'" data-quality="'+ value +'">'+ outputValue +'</li>').find('li:eq('+ index +')').bind('click', function(event){
 
-        // Store previous quality state for reference during update of color values onPlaybackQualityChange()
-        previousQualityState = player.getPlaybackQuality();
+          // Store previous quality state for reference during update of color values onPlaybackQualityChange()
+          previousQualityState = ytp.getPlaybackQuality();
 
        });
-
     });
-  }
+  },
 
-  // If video playing...
-  if (event.data == YT.PlayerState.PLAYING) {
+  updateQualityDisplay: function(previousQualityState, currentQualityState, color){
 
-    // Get current vid duration and set up interval timer to move silder thumb along the track
-    totalDuration = player.getDuration();
-    updateTimer = setInterval(function() {
+    $('#controls__video_quality__'+previousQualityState).css('color', '#ffffff');
+    $('#controls__video_quality__'+currentQualityState).css('color', s.currentQualityHighlightColor);
+  },
 
-      var currentTime = player.getCurrentTime(),
-      thumbValue = currentTime * (100 / totalDuration);
+  requestFullScreen: function(isFullscreen){
 
-      seekSlider.val(thumbValue);
+    var _requestMethod,
+        _element;
 
-    }, 800);
+    if(!isFullscreen){
+      _element = document.body;
+      _requestMethod = _element.requestFullScreen || _element.webkitRequestFullScreen || _element.mozRequestFullScreen || _element.msRequestFullscreen;
+    } else {
 
-  // If not playing, kill the interval timer
-  } else {
+      _element = document;
+      _requestMethod = _element.cancelFullScreen || _element.webkitCancelFullScreen || _element.mozCancelFullScreen || _element.msExitFullscreen;
+    }
+
+    if (_requestMethod) {
+        _requestMethod.call(_element);
+    } else if (typeof window.ActiveXObject !== "undefined") {
+        var wscript = new ActiveXObject("WScript.Shell");
+        if (wscript !== null) {
+            wscript.SendKeys("{F11}");
+        }
+    }
+  },
+
+  videoSeek: function(){
 
     clearTimeout(updateTimer);
+
+    var seekValue = ytp.getDuration() * (s.playerSeekSlider.val() / 100);
+    ytp.seekTo(seekValue);
   }
 
-  // Store reference to previous quality to update the UI
-  previousQualityState = player.getPlaybackQuality();
-
-  // Update quality display in UI
-  updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor);
-
-  // Toggle play / pause
-  playPause.toggleClass('active').ripple();
-}
-
-function onPlaybackQualityChange(event){
-
-  updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor);
-}
-
-function updateQualityDisplay(previousQualityState, currentQuality, color){
-
-  $('#controls__video_quality__'+previousQualityState).css('color', '#ffffff');
-  $('#controls__video_quality__'+currentQuality).css('color', currentQualityHighlightColor);
-}
-
-// Ripple function
-$.fn.ripple = function() {
-
-  var $rip = $(this).find('.ripple');
-  var $cont = $rip.parent();
-
-  // get size of parent element
-  var $sz = (Math.max($cont.outerWidth(), $cont.outerHeight()));
-
-  // prep to animate da ting
-  $rip.addClass('animate');
-  $rip.stop().animate({
-    // animation starts
-    opacity: 1,
-    width: $sz,
-    height: $sz
-  }, 150, 'easeOutQuad', function() {
-
-    // animation ends
-    $rip.stop().animate({
-      opacity: 0,
-    });
-
-    $rip.removeClass('animate');
-  });
 };

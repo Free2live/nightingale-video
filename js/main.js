@@ -1,3 +1,7 @@
+function onYouTubePlayerAPIReady() {
+  Player.init();
+}
+
 (function($) {
 
   PointerEventsPolyfill.initialize({});

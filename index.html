@@ -38,7 +38,9 @@
             <input id="seekslider" type="range" min="0" max="100" value="0" step="0.1">
             <div class="row">
                 <div class="col-xs-10">
-                    <div id="controls"><div class="controls__control" id="controls__play_pause"><span class="ripple"></span></div><div class="controls__control" id="controls__toggle_mute"><span class="ripple"></span></div><div class="controls__control" id="controls__toggle_fs"><span class="ripple"></span></div><div id="controls__quality-container"><div class="controls__quality-container__display"></div><div class="controls__control" id="controls__video_quality--left"></div><div id="controls__video_quality--centre"><ul></ul></div><div class="controls__control" id="controls__video_quality--right"></div></div></div>
+                  <div class="controls">
+                    <div class="controls__standard" id="controls__standard--play-pause"><span class="ripple"></span> </div> <div class="controls__standard" id="controls__standard--toggle-mute"><span class="ripple"></span></div><div class="controls__standard" id="controls__standard--fs"><span class="ripple"></span></div> <div class="controls__expanding"><div class="controls__expanding__icon"></div><div class="controls__standard" id="controls__expanding_left"></div><div id="controls__expanding_centre"><ul></ul></div><div class="controls__standard" id="controls__expanding_right"></div></div>
+                  </div>
                 </div>
                 <div class="col-xs-2">
                     <div class="share" id="fb"></div>
@@ -49,8 +51,8 @@
         <!-- Texture layer -->
         <div id="texture-overlay"></div>
         <!-- Video layer -->
-        <div id=ytwrapper>
-          <div id="ytplayer"></div>
+        <div id="yt-wrapper">
+          <div id="yt-player"></div>
         </div>
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>

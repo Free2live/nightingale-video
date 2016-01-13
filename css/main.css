@@ -78,12 +78,12 @@ span#libra-link__z-icon{
 	pointer-events: none;
 }
 
-#ytwrapper{
+#yt-wrapper{
 
 	opacity: 0;
 }
 
-#ytplayer{
+#yt-player{
 
 	position: absolute;
 	top: 0;
@@ -160,12 +160,7 @@ input[type=range]::-moz-range-track {
 	background: #ffffff;
 }
 
-#controls{
-
-	/*width: 212px;*/
-}
-
-.controls__control{
+.controls__standard{
 
 	display: inline-block;
 	vertical-align: top;
@@ -179,32 +174,32 @@ input[type=range]::-moz-range-track {
 	border-radius: 50%;
 }
 
-.controls__control:last-child{
+.controls__standard:last-child{
 
 	margin-right: 0;
 }
 
-.controls__control.active{
+.controls__standard.active{
 
 	background-position: -2px -41px;
 }
 
-#controls__play_pause{
+#controls__standard--play-pause{
 
 	background-image: url(../img/icons/controls/play-pause.png);
 }
 
-#controls__toggle_mute{
+#controls__standard--toggle-mute{
 
 	background-image: url(../img/icons/controls/toggle-mute.png);
 }
 
-#controls__toggle_fs{
+#controls__standard--fs{
 
 	background-image: url(../img/icons/controls/full-screen.png);
 }
 
-#controls__quality-container{
+.controls__expanding{
 
 	position: relative;
 	display: inline-block;
@@ -212,7 +207,14 @@ input[type=range]::-moz-range-track {
 	cursor: pointer;
 }
 
-.controls__quality-container__display{
+.controls__expanding > .controls__standard{
+
+	height: 40px;
+  width: 20px;
+  margin: 0;
+}
+
+.controls__expanding__icon{
 
 	position: absolute;
 	top: 0;
@@ -223,25 +225,18 @@ input[type=range]::-moz-range-track {
 	z-index: 1;
 }
 
-#controls__quality-container__display.active{
+#controls__expanding__icon.active{
 
 	background-image: url(../img/icons/controls/v-quality-close.png);
 }
 
-#controls__quality-container > .controls__control{
-
-	height: 40px;
-    width: 20px;
-    margin: 0;
-}
-
-#controls__video_quality--left{
+#controls__expanding_left{
 
      border-right: transparent;
      border-radius: 20px 0 0 20px;
 }
 
-#controls__video_quality--centre{
+#controls__expanding_centre{
 
 	display: inline-block;
 	vertical-align: top;
@@ -255,7 +250,7 @@ input[type=range]::-moz-range-track {
   transition: width 0.5s ease-in-out;
 }
 
-#controls__video_quality--centre > ul{
+#controls__expanding_centre > ul{
 
 	display: none;
 	position: relative;
@@ -266,7 +261,7 @@ input[type=range]::-moz-range-track {
     z-index: 0;
 }
 
-#controls__video_quality--centre > ul > li{
+#controls__expanding_centre > ul > li{
 
 	display: none;
 	display: inline;
@@ -274,12 +269,12 @@ input[type=range]::-moz-range-track {
 	margin-right: 8px;
 }
 
-#controls__video_quality--centre > ul > li:hover{
+#controls__expanding_centre > ul > li:hover{
 
 	color: #f44c02 !important;
 }
 
-#controls__video_quality--right{
+#controls__expanding_right{
 
      border-left: transparent;
      border-radius: 0 20px 20px 0;
