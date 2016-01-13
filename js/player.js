@@ -1,6 +1,7 @@
 var s,
     ytp,
     availableQuality,
+    previousQualityState,
     totalDuration,
     updateTimer,
 
@@ -20,7 +21,7 @@ Player = {
     showRelatedContent: 0,
     enableModestBranding: 1,
     standardPlayerControls: $('.controls__standard'),
-    exapandingPlayerControls: $('.controls__expanding'),
+    expandingPlayerControls: $('.controls__expanding'),
     controlsContainer: $('#controls__expanding_centre'),
     controlsList: $('#controls__expanding_centre ul'),
     playPauseBtn: $('#controls__standard--play-pause'),
@@ -57,12 +58,20 @@ Player = {
   bindEvents: function(){
     s.playerSeekSlider.on('change', this.videoSeek);
     s.standardPlayerControls.on('click', this.onStandardPlayerControlsClick);
-    s.exapandingPlayerControls.on('click', this.onExapandingPlayerControlsClick);
+    s.expandingPlayerControls.on('click', this.onExpandingPlayerControlsClick);
   },
+
+  /*
+  ██    ██ ████████     ███████ ██    ██ ███████ ███    ██ ████████ ███████
+   ██  ██     ██        ██      ██    ██ ██      ████   ██    ██    ██
+    ████      ██        █████   ██    ██ █████   ██ ██  ██    ██    ███████
+     ██       ██        ██       ██  ██  ██      ██  ██ ██    ██         ██
+     ██       ██        ███████   ████   ███████ ██   ████    ██    ███████
+  */
 
   onPlayerReady: function(event){
 
-    console.log('Player: Ready');
+    console.log('Player event: Ready');
 
     event.target.setPlaybackQuality('default');
     TweenMax.to(s.playerWrapper, 1, {opacity: 1});
@@ -70,7 +79,7 @@ Player = {
 
   onPlayerStateChange: function(event){
 
-    console.log('Player: State change event');
+    console.log('Player event: State change');
 
     // Request available qualities and load into controls display
     // getAvailableQualityLevels is only available on playerStateChange (this function and not onPlayerReady), so it's wrapped in an undefined check to run once only
@@ -111,14 +120,26 @@ Player = {
   },
 
   onPlaybackQualityChange: function(event){
-    console.log('Player: Quality change event');
+    console.log('Player event: Quality change');
+
+    Player.updateQualityDisplay(previousQualityState, ytp.getPlaybackQuality(), s.currentQualityHighlightColor);
   },
+
+  /*
+  ██████  ██       █████  ██    ██ ███████ ██████      ███████ ██    ██ ███████ ███    ██ ████████ ███████
+  ██   ██ ██      ██   ██  ██  ██  ██      ██   ██     ██      ██    ██ ██      ████   ██    ██    ██
+  ██████  ██      ███████   ████   █████   ██████      █████   ██    ██ █████   ██ ██  ██    ██    ███████
+  ██      ██      ██   ██    ██    ██      ██   ██     ██       ██  ██  ██      ██  ██ ██    ██         ██
+  ██      ███████ ██   ██    ██    ███████ ██   ██     ███████   ████   ███████ ██   ████    ██    ███████
+  */
 
   onStandardPlayerControlsClick: function(){
 
     console.log('Player: Standard control click (' + $(this).attr('id') + ')');
 
-    switch($(this).attr('id')){
+    var _id = $(this).attr('id');
+
+    switch(_id){
 
       case 'controls__standard--play-pause':
 
@@ -147,12 +168,15 @@ Player = {
       break;
     }
 
-    $(this).toggleClass('active');
+    if(!_id == 'controls__standard--play-pause'){
+
+      $(this).toggleClass('active');
+    }
   },
 
-  onExapandingPlayerControlsClick: function(){
+  onExpandingPlayerControlsClick: function(){
 
-    console.log('Player: expanding control click (' + $(this).attr('id') + ')');
+    console.log('Player event: expanding control click');
 
     var _activeElems = [s.controlsContainer, s.exapandingPlayerControls];
 
@@ -171,6 +195,14 @@ Player = {
       $(this).toggleClass('active');
     });
   },
+
+  /*
+   ██████ ██    ██ ███████ ████████  ██████  ███    ███
+  ██      ██    ██ ██         ██    ██    ██ ████  ████
+  ██      ██    ██ ███████    ██    ██    ██ ██ ████ ██
+  ██      ██    ██      ██    ██    ██    ██ ██  ██  ██
+   ██████  ██████  ███████    ██     ██████  ██      ██
+  */
 
   setAvailablePlaybackQualities: function(qualityLevel){
 
