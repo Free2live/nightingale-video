@@ -1,4 +1,5 @@
 var player,
+playerContainer = $('#ytwrapper'),
 videoKey = 'H6SsB3JYqQg',
 elem = document.body,
 playPause = $('#controls__play_pause'),
@@ -79,7 +80,7 @@ function onYouTubePlayerAPIReady() {
   });
 
   // Controls open / close button functionality
-  $('#controls__quality-container__display').bind('click', function(){
+  $('.controls__quality-container__display').bind('click', function(){
 
       var activeElems = [controlsContainer, controlsDisplay];
 
@@ -138,7 +139,10 @@ function videoSeek(){
 // YT events
 function onPlayerReady(event){
 
+  console.log('Player ready');
   event.target.setPlaybackQuality('default');
+
+  TweenMax.to(playerContainer, 1, {opacity: 1});
 }
 
 function onPlayerStateChange(event){
@@ -147,8 +151,10 @@ function onPlayerStateChange(event){
   // getAvailableQualityLevels is only available on playerStateChange (this function and not onPlayerReady), so it's wrapped in an undefined check to run once only
   if(typeof availableQuality === 'undefined'){
 
+    //Get available qualities
     availableQuality = player.getAvailableQualityLevels();
 
+    // Loop through available qualities
     $.each(availableQuality, function(index, value){
 
         var subStr = "hd",

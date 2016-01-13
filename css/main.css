@@ -78,6 +78,11 @@ span#libra-link__z-icon{
 	pointer-events: none;
 }
 
+#ytwrapper{
+
+	opacity: 0;
+}
+
 #ytplayer{
 
 	position: absolute;
@@ -207,7 +212,7 @@ input[type=range]::-moz-range-track {
 	cursor: pointer;
 }
 
-#controls__quality-container__display{
+.controls__quality-container__display{
 
 	position: absolute;
 	top: 0;
