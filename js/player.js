@@ -153,44 +153,50 @@ function onPlayerStateChange(event){
 
         var subStr = "hd",
             caseMatches = ['large', 'medium', 'small', 'tiny', 'auto'],
-            displayValue;
+            outputValue;
 
+        // On looping through each available quality, if value begins with hd...
         if (value.substring(0, subStr.length) === subStr) {
 
-          displayValue = (value.replace(subStr, "")) + 'HD';
+          // Remove it from the string and store in outputValue
+          outputValue = (value.replace(subStr, "")) + 'HD';
 
+        // Else if value matches any of the caseMatches ('large', 'medium', 'small' etc)
         }else if(caseMatches.indexOf(value) > -1){
 
+          // Then set outputValue to new appropiate string value.
           switch (value) {
             case 'large':
-              displayValue = '480p';
+              outputValue = '480p';
               break;
             case 'medium':
-              displayValue = '360p';
+              outputValue = '360p';
               break;
             case 'small':
-              displayValue = '240p';
+              outputValue = '240p';
               break;
             case 'tiny':
-              displayValue = '144p';
+              outputValue = '144p';
               break;
             case 'auto':
-              displayValue = 'Auto';
+              outputValue = 'Auto';
               break;
             default:
-              displayValue = value;
+              outputValue = value;
               break;
           }
 
         }else{
-          
-            displayValue = value;
+
+            // Else it is what it is..
+            outputValue = value;
         }
 
-       controlsList.append('<li id="controls__video_quality__'+ value +'" data-quality="'+ value +'">'+ displayValue +'</li>').find('li:eq('+ index +')').bind('click', function(event){
+        // Insert li element into display list. Add the display values to the elem id and data attr. outputValue is displayed to user.
+        controlsList.append('<li id="controls__video_quality__'+ value +'" data-quality="'+ value +'">'+ outputValue +'</li>').find('li:eq('+ index +')').bind('click', function(event){
 
+        // Store previous quality state for reference during update of color values onPlaybackQualityChange()
         previousQualityState = player.getPlaybackQuality();
-        player.setPlaybackQuality($(this).data('quality'));
 
        });
 
@@ -211,7 +217,7 @@ function onPlayerStateChange(event){
 
     }, 800);
 
-    // If not playing, kill the interval timer
+  // If not playing, kill the interval timer
   } else {
 
     clearTimeout(updateTimer);
@@ -221,7 +227,7 @@ function onPlayerStateChange(event){
   previousQualityState = player.getPlaybackQuality();
 
   // Update quality display in UI
-  updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor, 'onPlayerStateChange');
+  updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor);
 
   // Toggle play / pause
   playPause.toggleClass('active').ripple();
@@ -229,16 +235,11 @@ function onPlayerStateChange(event){
 
 function onPlaybackQualityChange(event){
 
-  if(typeof previousQualityState !== 'undefined'){
-    updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor, 'onPlaybackQualityChange');
-  }
-
-  updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor, 'onPlaybackQualityChange');
+  updateQualityDisplay(previousQualityState, player.getPlaybackQuality(), currentQualityHighlightColor);
 }
 
-function updateQualityDisplay(previousQualityState, currentQuality, color, _from){
+function updateQualityDisplay(previousQualityState, currentQuality, color){
 
-  // console.log('update quallers called: '+previousQualityState, currentQuality, color, currentQualityHighlightColor, _from);
   $('#controls__video_quality__'+previousQualityState).css('color', '#ffffff');
   $('#controls__video_quality__'+currentQuality).css('color', currentQualityHighlightColor);
 }
