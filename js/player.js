@@ -13,7 +13,7 @@ Player = {
     playerElem: 'yt-player',
     playerWidth: '100%',
     playerHeight: '100%',
-    videoKey: 'H6SsB3JYqQg',
+    videoKey: 'Mnf15KwPV-Q',
     autoPlay: 1,
     enableYouTubeApi: 1,
     enableControls: 0,
@@ -22,11 +22,15 @@ Player = {
     enableModestBranding: 1,
     standardPlayerControls: $('.controls__standard'),
     expandingPlayerControls: $('.controls__expanding'),
+    expandingPlayerControlIcon: $('.controls__expanding__icon'),
     controlsContainer: $('#controls__expanding_centre'),
     controlsList: $('#controls__expanding_centre ul'),
     playPauseBtn: $('#controls__standard--play-pause'),
     playerSeekSlider: $('#seekslider'),
-    currentQualityHighlightColor: '#f44c02'
+    colorTheme:{
+      primary: '#ffffff',
+      secondary: '#f44c02'
+    }
   },
 
   init: function(){
@@ -56,9 +60,11 @@ Player = {
   },
 
   bindEvents: function(){
+    s.playerSeekSlider.on('mousedown', this.onSeekMouseDown);
+    s.playerSeekSlider.on('mouseup', this.onSeekRelease);
     s.playerSeekSlider.on('change', this.videoSeek);
     s.standardPlayerControls.on('click', this.onStandardPlayerControlsClick);
-    s.expandingPlayerControls.on('click', this.onExpandingPlayerControlsClick);
+    s.expandingPlayerControlIcon.on('click', this.onExpandingPlayerControlsClick);
   },
 
   /*
@@ -101,7 +107,7 @@ Player = {
 
         s.playerSeekSlider.val(thumbValue);
 
-      }, 800);
+      }, 400);
 
     // If not playing, kill the interval timer
     } else {
@@ -182,7 +188,7 @@ Player = {
 
     if(!s.controlsContainer.hasClass('active')){
 
-      s.controlsContainer.css( "width", s.controlsList.width() + 10).find('ul').delay(500).fadeIn(500);
+      s.controlsContainer.css( "width", s.controlsList.width() + 15).find('ul').delay(500).fadeIn(500);
 
     }else{
 
@@ -194,6 +200,10 @@ Player = {
     $.each(_activeElems, function(index, value){
       $(this).toggleClass('active');
     });
+  },
+
+  onSeekMouseDown: function(){
+    clearInterval(updateTimer);
   },
 
   /*
@@ -251,19 +261,25 @@ Player = {
         }
 
         // Insert li element into display list. Add the display values to the elem id and data attr. outputValue is displayed to user.
-        s.controlsList.append('<li id="controls__video_quality__'+ value +'" data-quality="'+ value +'">'+ outputValue +'</li>').find('li:eq('+ index +')').bind('click', function(event){
-
-          // Store previous quality state for reference during update of color values onPlaybackQualityChange()
-          previousQualityState = ytp.getPlaybackQuality();
-
-       });
+        s.controlsList.append('<li id="controls__video_quality__'+ value +'" data-quality="'+ value +'">'+ outputValue +'</li>').find('li:eq('+ index +')').on('click', Player.onQualitySelect);
     });
+  },
+
+  onQualitySelect: function(event){
+
+    console.log($(this).data('quality'));
+    // Store previous quality state for reference during update of color values onPlaybackQualityChange()
+    previousQualityState = ytp.getPlaybackQuality();
+
+    // ytp.stopVideo();
+    ytp.setPlaybackQuality($(this).data('quality'));
+    ytp.playVideo();
   },
 
   updateQualityDisplay: function(previousQualityState, currentQualityState, color){
 
-    $('#controls__video_quality__'+previousQualityState).css('color', '#ffffff');
-    $('#controls__video_quality__'+currentQualityState).css('color', s.currentQualityHighlightColor);
+    $('#controls__video_quality__'+previousQualityState).css('color', s.colorTheme.primary);
+    $('#controls__video_quality__'+currentQualityState).css('color', s.colorTheme.secondary);
   },
 
   requestFullScreen: function(isFullscreen){
