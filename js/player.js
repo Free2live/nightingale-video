@@ -9,8 +9,9 @@ Player = {
 
   settings:{
 
-    playerWrapper: '#yt-wrapper',
+    playerWrapper: $('#yt-wrapper'),
     playerElem: 'yt-player',
+    playerPoster: '#poster-overlay',
     playerWidth: '100%',
     playerHeight: '100%',
     videoKey: 'Mnf15KwPV-Q',
@@ -77,15 +78,13 @@ Player = {
 
   onPlayerReady: function(event){
 
-    console.log('Player event: Ready');
-
     event.target.setPlaybackQuality('default');
-    TweenMax.to(s.playerWrapper, 1, {opacity: 1});
+    ytp.mute();
+    Player.toggleFade();
+    console.log('Player event: Ready');
   },
 
   onPlayerStateChange: function(event){
-
-    console.log('Player event: State change');
 
     // Request available qualities and load into controls display
     // getAvailableQualityLevels is only available on playerStateChange (this function and not onPlayerReady), so it's wrapped in an undefined check to run once only
@@ -95,40 +94,38 @@ Player = {
       Player.setAvailablePlaybackQualities(availableQuality);
     }
 
+    if(event.data == YT.PlayerState.BUFFERING){
+      Player.onPlayerStateBuffering();
+      console.log('Player state: BUFFERING');
+    }
+
     // If video playing...
     if (event.data == YT.PlayerState.PLAYING) {
-
-      // Get current vid duration and set up interval timer to move silder thumb along the track
-      totalDuration = ytp.getDuration();
-      updateTimer = setInterval(function() {
-
-        var currentTime = ytp.getCurrentTime(),
-        thumbValue = currentTime * (100 / totalDuration);
-
-        s.playerSeekSlider.val(thumbValue);
-
-      }, 400);
-
+      Player.onPlayerStatePlaying();
+      console.log('Player state: PLAYING');
     // If not playing, kill the interval timer
     } else {
-
       clearTimeout(updateTimer);
+    }
+
+    if(event.data == YT.PlayerState.ENDED){
+      Player.onPlayerStateEnded();
+      console.log('Player state: ENDED');
     }
 
     // Store reference to previous quality to update the UI
     previousQualityState = ytp.getPlaybackQuality();
 
     // Update quality display in UI
-    Player.updateQualityDisplay(previousQualityState, ytp.getPlaybackQuality(), s.currentQualityHighlightColor);
+    Player.updateQualityDisplay(previousQualityState, ytp.getPlaybackQuality());
 
     // Toggle play / pause
-    s.playPauseBtn.toggleClass('active');//.ripple();
+    s.playPauseBtn.toggleClass('active');
   },
 
   onPlaybackQualityChange: function(event){
+    Player.updateQualityDisplay(previousQualityState, ytp.getPlaybackQuality());
     console.log('Player event: Quality change');
-
-    Player.updateQualityDisplay(previousQualityState, ytp.getPlaybackQuality(), s.currentQualityHighlightColor);
   },
 
   /*
@@ -182,13 +179,11 @@ Player = {
 
   onExpandingPlayerControlsClick: function(){
 
-    console.log('Player event: expanding control click');
-
     var _activeElems = [s.controlsContainer, s.exapandingPlayerControls];
 
     if(!s.controlsContainer.hasClass('active')){
 
-      s.controlsContainer.css( "width", s.controlsList.width() + 15).find('ul').delay(500).fadeIn(500);
+      s.controlsContainer.css( "width", s.controlsList.width() + 20).find('ul').delay(500).fadeIn(500);
 
     }else{
 
@@ -200,6 +195,8 @@ Player = {
     $.each(_activeElems, function(index, value){
       $(this).toggleClass('active');
     });
+
+    console.log('Player event: expanding control click');
   },
 
   onSeekMouseDown: function(){
@@ -213,6 +210,20 @@ Player = {
   ██      ██    ██      ██    ██    ██    ██ ██  ██  ██
    ██████  ██████  ███████    ██     ██████  ██      ██
   */
+
+  toggleFade: function(){
+
+    var _o = s.playerWrapper.css('opacity') == 1 ? 0 : 1;
+
+    console.log(_o);
+
+    // if(s.playerWrapper.css(opacity) == 1){
+    //   _o = 0;
+    // }else{
+    //   _o = 1;
+    // }
+    TweenMax.to(s.playerWrapper, 1, {opacity: _o});
+  },
 
   setAvailablePlaybackQualities: function(qualityLevel){
 
@@ -259,25 +270,20 @@ Player = {
             // Else it is what it is..
             outputValue = value;
         }
-
         // Insert li element into display list. Add the display values to the elem id and data attr. outputValue is displayed to user.
         s.controlsList.append('<li id="controls__video_quality__'+ value +'" data-quality="'+ value +'">'+ outputValue +'</li>').find('li:eq('+ index +')').on('click', Player.onQualitySelect);
     });
   },
 
   onQualitySelect: function(event){
-
-    console.log($(this).data('quality'));
     // Store previous quality state for reference during update of color values onPlaybackQualityChange()
     previousQualityState = ytp.getPlaybackQuality();
 
-    // ytp.stopVideo();
-    ytp.setPlaybackQuality($(this).data('quality'));
+    ytp.pauseVideo();
     ytp.playVideo();
   },
 
-  updateQualityDisplay: function(previousQualityState, currentQualityState, color){
-
+  updateQualityDisplay: function(previousQualityState, currentQualityState){
     $('#controls__video_quality__'+previousQualityState).css('color', s.colorTheme.primary);
     $('#controls__video_quality__'+currentQualityState).css('color', s.colorTheme.secondary);
   },
@@ -291,7 +297,6 @@ Player = {
       _element = document.body;
       _requestMethod = _element.requestFullScreen || _element.webkitRequestFullScreen || _element.mozRequestFullScreen || _element.msRequestFullscreen;
     } else {
-
       _element = document;
       _requestMethod = _element.cancelFullScreen || _element.webkitCancelFullScreen || _element.mozCancelFullScreen || _element.msExitFullscreen;
     }
@@ -307,11 +312,40 @@ Player = {
   },
 
   videoSeek: function(){
-
     clearTimeout(updateTimer);
-
     var seekValue = ytp.getDuration() * (s.playerSeekSlider.val() / 100);
     ytp.seekTo(seekValue);
-  }
+  },
 
+  onPlayerStatePlaying: function(){
+
+    // Get current vid duration and set up interval timer to move silder thumb along the track
+    totalDuration = ytp.getDuration();
+    updateTimer = setInterval(function() {
+
+      var currentTime = ytp.getCurrentTime(),
+      thumbValue = currentTime * (100 / totalDuration);
+
+      s.playerSeekSlider.val(thumbValue);
+
+    }, 400);
+  },
+
+  onPlayerStateBuffering: function(){
+
+  },
+
+  onPlayerStateEnded: function(){
+
+    var _t = new TimelineLite(),
+        _poster = $(s.playerPoster),
+        _share = _poster.find('.share');
+
+    _poster.show();
+
+    _t.to(s.playerPoster, 1, {opacity:1})
+			.to(_share, 0.75, {top: 500}, '-=1');
+
+    TweenMax.to(s.playerPoster, 0.3, {opacity: 1});
+  }
 };
