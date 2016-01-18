@@ -1,5 +1,4 @@
 #seekslider{
-
 	position: absolute;
 	top: -1px;
 	left: 0;
@@ -20,7 +19,6 @@ input[type=range]:focus {
 
 /* Special styling for WebKit/Blink */
 input[type=range]::-webkit-slider-thumb {
-
 	position: relative;
 	left: 0;
 	top: 5px;
@@ -37,7 +35,7 @@ input[type=range]::-webkit-slider-thumb {
 
 /* All the same stuff for Firefox */
 input[type=range]::-moz-range-thumb {
-
+  z-index: 1;
 	position: relative;
 	top: 7px;
 	height: 22px;
@@ -47,7 +45,6 @@ input[type=range]::-moz-range-thumb {
 }
 
 input[type=range]::-webkit-slider-runnable-track {
-
 	width: 100%;
 	height: 2px;
 	cursor: pointer;
@@ -55,14 +52,31 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 input[type=range]:focus::-webkit-slider-runnable-track {
-
 	background: #ffffff;
 }
 
 input[type=range]::-moz-range-track {
-
 	width: 100%;
 	height: 2px;
 	cursor: pointer;
 	background: #ffffff;
 }
+
+// formerly red / now orange played bar
+
+#seekslider__thumb-trail {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 0%;
+  height: 2px;
+  background-color: #f44c02;
+}
+
+// to be merged in if not already in master branch
+// keep thumb on top of played track
+/*input[type=range]::-webkit-slider-thumb {
+  z-index: 1;
+}
+*/
