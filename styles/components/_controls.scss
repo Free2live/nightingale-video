@@ -1,0 +1,131 @@
+.controls__standard {
+	display: inline-block;
+	vertical-align: top;
+	width: 38px;
+	height: 38px;
+	margin-right: 16px;
+	cursor: pointer;
+	background-repeat: no-repeat;
+	background-position: -2px -1px;
+	border: 2px solid #ffffff;
+	border-radius: 50%;
+}
+
+.controls__standard:last-child {
+	margin-right: 0;
+}
+
+.controls__standard.active {
+	background-position: -2px -41px;
+}
+
+#controls__standard--play-pause {
+	background-image: url(../images/icons/controls/play-pause.png);
+}
+
+#controls__standard--toggle-mute {
+	background-image: url(../images/icons/controls/toggle-mute.png);
+}
+
+#controls__standard--fs {
+	background-image: url(../images/icons/controls/full-screen.png);
+}
+
+.controls__expanding {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	cursor: pointer;
+}
+
+.controls__expanding > .controls__standard {
+	height: 40px;
+  width: 20px;
+  margin: 0;
+}
+
+.controls__expanding__icon {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 41px;
+	height: 41px;
+	background: url(../images/icons/controls/video-quality.png) top left no-repeat;
+	z-index: 1;
+}
+
+#controls__expanding__icon.active {
+	background-image: url(../images/icons/controls/v-quality-close.png);
+}
+
+#controls__expanding_left {
+     border-right: transparent;
+     border-radius: 20px 0 0 20px;
+}
+
+#controls__expanding_centre {
+	display: inline-block;
+	vertical-align: top;
+	width: 0px;
+	height: 40px;
+	border-top: 2px solid #ffffff;
+	border-bottom: 2px solid #ffffff;
+	-webkit-transition: width 0.5s ease-in-out;
+  -moz-transition: width 0.5s ease-in-out;
+  -o-transition: width 0.5s ease-in-out;
+  transition: width 0.5s ease-in-out;
+}
+
+#controls__expanding_centre > ul {
+	display: none;
+	position: relative;
+	top: 8px;
+	list-style-type: none;
+  margin: 0;
+  padding: 0;
+  z-index: 0;
+}
+
+#controls__expanding_centre > ul > li {
+	display: none;
+	display: inline;
+	color: #ffffff;
+	margin-right: 8px;
+}
+
+#controls__expanding_centre > ul > li:hover {
+	color: #f44c02 !important;
+}
+
+#controls__expanding_right {
+     border-left: transparent;
+     border-radius: 0 20px 20px 0;
+}
+
+// anims.scss
+
+// ripple effect
+
+.controls__control {
+  position: relative;
+  text-align: center;
+/*  .icon {
+    position: relative;
+    top: 7px;
+    z-index: 3;
+    height: 20px;
+    width: 20px;
+  }*/
+  .ripple {
+    //opacity: 0.5;
+    z-index: 2;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform:translate(-50%, -50%);
+    border-radius: 100%;
+    height: 0%;
+    width: 0%;
+    background-color: #fff;
+  }
+}

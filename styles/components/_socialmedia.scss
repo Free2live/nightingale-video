@@ -1,0 +1,75 @@
+.icon {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    /*background: url(../img/icons/twitter.png) no-repeat;*/
+    /*background-size: 40px 40px;*/
+    margin: auto;
+    top: 0; left: 0; bottom: 0; right: 0;
+    z-index: 3;
+
+    -webkit-box-shadow:
+      0 0 0 10px   rgba(255,255,255,.2),
+      0 0 25px 2px rgba(0,0,0,.4),
+inset 0 0 0 15px   rgba(255,255,155,.4);
+    -moz-box-shadow:
+      0 0 0 10px   rgba(255,255,255,.2),
+      0 0 25px 2px rgba(0,0,0,.4),
+inset 0 0 0 15px   rgba(255,255,255,.4);
+    box-shadow:
+      0 0 0 10px   rgba(255,255,255,.2),
+      0 0 25px 2px rgba(0,0,0,.4),
+inset 0 0 0 15px   rgba(255,255,255,.4);
+
+    -webkit-border-radius: 999px;
+    -moz-border-radius: 999px;
+    border-radius: 999px;
+}
+
+.pulse1 {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    margin: auto;
+    top: 0; left: 0; bottom: 0; right: 0;
+    z-index: 1;
+    opacity: 0;
+    border: 3px solid rgba(255,255,255,.1);
+
+    -webkit-animation: pulsejg1 4s linear infinite;
+    -moz-animation: pulsejg1 4s linear infinite;
+    animation: pulsejg1 4s linear infinite;
+    -webkit-border-radius: 999px;
+    -moz-border-radius: 999px;
+    border-radius: 999px;
+    -webkit-box-shadow: inset 0px 0px 15px 10px rgba(0, 0, 0, .6);
+    -moz-box-shadow: inset 0px 0px 15px 10px rgba(0, 0, 0, .6);
+    box-shadow: inset 0px 0px 15px 10px rgba(0, 0, 0, .6);
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.pulse2 {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    margin: auto;
+    top: 0; left: 0; bottom: 0; right: 0;
+    z-index: 2;
+    opacity: 0;
+    border: 1px solid rgba(255,255,255,0);
+
+    -webkit-animation: pulsejg2 4s linear infinite;
+    -moz-animation: pulsejg2 4s linear infinite;
+    animation: pulsejg2 4s linear infinite;
+    -webkit-border-radius: 999px;
+    -moz-border-radius: 999px;
+    border-radius: 999px;
+    -webkit-box-shadow: inset 0px 0px 12px 5px rgba(255, 255, 255, .8);
+    -moz-box-shadow: inset 0px 0px 12px 5px rgba(255, 255, 255, .8);
+    box-shadow: inset 0px 0px 12px 5px rgba(255, 255, 255, .8);
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
