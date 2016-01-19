@@ -1,16 +1,31 @@
-div.controls__standard--share-twitter, div.controls__standard--share-facebook {
-  background: {
-    size: 20px 20px;
-    position: center center;
+div.controls--social {
+  perspective: inherit;
+  &:first-child {
+    margin-left: 40px;
+  }
+  .controls__standard--share-twitter, .controls__standard--share-facebook {
+    .flip {
+      transition: transform .5s;
+      height: 100%;
+      width: 100%;
+      background: {
+        size: 20px 20px;
+        repeat: no-repeat;
+        position: center center;
+      }
+    }
+    &:hover .flip {
+      transform: rotateY(180deg);
+    }
   }
 }
 
-div.controls__standard--share-twitter {
-  background-image: url('../images/icons/social-twitter.svg');
+div.controls__standard--share-facebook .flip {
+  background-image: url('../images/icons/social-facebook.svg');
 }
 
-div.controls__standard--share-facebook {
-  background-image: url('../images/icons/social-facebook.svg');
+div.controls__standard--share-twitter .flip {
+  background-image: url('../images/icons/social-twitter.svg');
 }
 
 .icon {
