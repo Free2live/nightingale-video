@@ -1,5 +1,3 @@
 (function($) {
-
   PointerEventsPolyfill.initialize({});
-
 })(jQuery);
