@@ -1,3 +1,18 @@
+div.controls__standard--share-twitter, div.controls__standard--share-facebook {
+  background: {
+    size: 20px 20px;
+    position: center center;
+  }
+}
+
+div.controls__standard--share-twitter {
+  background-image: url('../images/icons/social-twitter.svg');
+}
+
+div.controls__standard--share-facebook {
+  background-image: url('../images/icons/social-facebook.svg');
+}
+
 .icon {
     position: absolute;
     width: 180px;
