@@ -1,8 +1,8 @@
 div.controls--social {
+  position: relative;
+  right: 10px;
+  text-align: right;
   perspective: inherit;
-  &:first-child {
-    margin-left: 40px;
-  }
   .controls__standard--share-twitter, .controls__standard--share-facebook {
     .flip {
       transition: transform .5s;
@@ -15,7 +15,7 @@ div.controls--social {
       }
     }
     &:hover .flip {
-      transform: rotateY(180deg);
+      transform: rotateY(360deg);
     }
   }
 }

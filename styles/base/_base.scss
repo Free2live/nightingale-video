@@ -38,4 +38,7 @@ html, body, section#overlay, #ytplayer{
 a {
   color: #fff; // main.css
   text-decoration: none;
+  &:hover {
+    text-decoration: none;
+  }
 }

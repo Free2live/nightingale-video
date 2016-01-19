@@ -1,4 +1,4 @@
-.controls__standard, .controls__expanding {
+.controls__standard {
   border-radius: 50%;
   &:hover {
     background-color: #242424;
@@ -39,6 +39,9 @@
   display: inline-block;
   vertical-align: top;
   cursor: pointer;
+  &:hover {
+    border-color: #242424;
+  }
 }
 
 .controls__expanding > .controls__standard {
