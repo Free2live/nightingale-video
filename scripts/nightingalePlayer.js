@@ -41,6 +41,7 @@ var nightingalePlayer = (function() {
         controlsList: $('#controls__expanding_centre ul'),
         playPauseBtn: $('#controls__standard--play-pause'),
         playerSeekSlider: $('#seekslider'),
+        playedBar: $('#seekslider__thumb-trail'),
         colorTheme:{
           primary: '#ffffff',
           secondary: '#f44c02'
@@ -325,7 +326,11 @@ var nightingalePlayer = (function() {
         thumbValue = currentTime * (100 / totalDuration);
 
         s.playerSeekSlider.val(thumbValue);
-
+        
+        // scrubber colored trail for played % on track
+        var playerBarPerc = (Math.round(thumbValue * 10) / 10).toFixed(1) + '%';
+        s.playedBar.width(playerBarPerc);
+        
       }, 400);
     }
 
