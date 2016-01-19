@@ -51,6 +51,7 @@ var nightingalePlayer = (function() {
 
       s = settings;
 
+      // check to see if target div exists before initialising
       if($('#'+s.playerElem).length){
 
         ytp = new YT.Player(s.playerElem, {
@@ -75,7 +76,8 @@ var nightingalePlayer = (function() {
         bindEvents();
 
       }else{
-        console.error('nightingalePlayer Error: Cannot initialize, no target div found. Please add a div with id "'+ s.playerElem +'" to the page.');
+        // Throw and error if no target div.
+        console.error('nightingalePlayer Error: Cannot initialise, no target div found. Please add a div with id "'+ s.playerElem +'" to the page.');
       }
 
     }
