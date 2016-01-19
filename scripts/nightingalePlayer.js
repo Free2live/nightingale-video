@@ -79,7 +79,7 @@ var nightingalePlayer = (function() {
 
       }else{
         // Throw and error if no target div.
-        console.error('nightingalePlayer Error: Cannot initialise, no target div found. Please add a div with id "'+ s.playerElem +'" to the page.');
+        console.error('nightingalePlayer Error: Cannot initialise, no target div found. Please add a div with id "nightingalePlayer__player" to the page.');
       }
 
     }
@@ -103,7 +103,7 @@ var nightingalePlayer = (function() {
     function onPlayerReady(event){
 
       event.target.setPlaybackQuality('default');
-      ytp.mute(); // remove from Production
+      // ytp.mute(); // remove from Production
       toggleWrapperFade();
       console.log('nightingalePlayer event: Ready');
     }
@@ -162,9 +162,9 @@ var nightingalePlayer = (function() {
 
     function onStandardPlayerControlsClick(){
 
-      console.log('nightingalePlayer event: Standard control click (' + $(this).attr('id') + ')');
+			var _id = $(this).attr('id');
 
-      var _id = $(this).attr('id');
+      console.log('nightingalePlayer event: Standard control click (' + _id + ')');
 
       switch(_id){
 

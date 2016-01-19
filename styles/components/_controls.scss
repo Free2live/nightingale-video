@@ -15,7 +15,7 @@
   background-repeat: no-repeat;
   background-position: -3px -2px;
   border: 2px solid #ffffff;
-  
+
 }
 
 .controls__standard.active {
@@ -32,6 +32,10 @@
 
 #controls__standard--fs {
   background-image: url(../images/icons/controls/full-screen.png);
+}
+
+#controls__standard--fs.active {
+  background-position: -3px -2px;
 }
 
 .controls__expanding {
