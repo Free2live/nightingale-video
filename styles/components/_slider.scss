@@ -11,6 +11,7 @@ input[type=range] {
 
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
+  z-index: 1;
 }
 
 input[type=range]:focus {
