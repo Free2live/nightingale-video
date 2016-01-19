@@ -58,16 +58,18 @@
 	width: 100%;
 	height: 100%;
 	z-index: 3;
-	background-color: white;
-	opacity: 0;
+	background-color: black;
+	opacity: 1;
+
+	button{
+		position: absolute;
+		top: 50%;
+	  left: 50%;
+	  transform: translate(-50%, -50%);
+	}
 }
 
-#poster-overlay .share {
-	position: relative;
-	top: 600px;
-}
-
-#texture-layer {
+#texture-overlay {
 	position: relative;
 	top: 0;
 	width: 100%;
