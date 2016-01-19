@@ -23,8 +23,8 @@ var nightingalePlayer = (function() {
       settings = {
 
         playerWrapper: $('#nightingalePlayer'),
-        playerElem: 'nightingalePlayer__player',
-        playerPoster: '#poster-overlay',
+        playerElem: $('#nightingalePlayer__player'),
+        playerPoster: $('#poster-overlay'),
         playerWidth: '100%',
         playerHeight: '100%',
         videoKey: 'Mnf15KwPV-Q',
@@ -40,6 +40,7 @@ var nightingalePlayer = (function() {
         controlsContainer: $('#controls__expanding_centre'),
         controlsList: $('#controls__expanding_centre ul'),
         playPauseBtn: $('#controls__standard--play-pause'),
+				replayVideoBtn: $('#poster-overlay').find('button'),
         playerSeekSlider: $('#seekslider'),
         playedBar: $('#seekslider__thumb-trail'),
         colorTheme:{
@@ -53,9 +54,9 @@ var nightingalePlayer = (function() {
       s = settings;
 
       // check to see if target div exists before initialising
-      if($('#'+s.playerElem).length){
+      if(s.playerElem.length){
 
-        ytp = new YT.Player(s.playerElem, {
+        ytp = new YT.Player(s.playerElem.attr('id'), {
             width: s.playerWidth,
             height: s.playerHeight,
             videoId: s.videoKey,
@@ -74,7 +75,7 @@ var nightingalePlayer = (function() {
           }
         });
 
-        bindEvents();
+        bindCustomEvents();
 
       }else{
         // Throw and error if no target div.
@@ -83,11 +84,12 @@ var nightingalePlayer = (function() {
 
     }
 
-    function bindEvents(){
+    function bindCustomEvents(){
       s.playerSeekSlider.on('mousedown', onSeekMouseDown);
-      s.playerSeekSlider.on('change', videoSeek);
+      s.playerSeekSlider.on('change', onPlayerSeekSlider);
       s.standardPlayerControls.on('click', onStandardPlayerControlsClick);
       s.expandingPlayerControlIcon.on('click', onExpandingPlayerControlsClick);
+			s.replayVideoBtn.on('click', onReplayBtnClick);
     }
 
     /*
@@ -101,8 +103,8 @@ var nightingalePlayer = (function() {
     function onPlayerReady(event){
 
       event.target.setPlaybackQuality('default');
-      ytp.mute();
-      toggleFade();
+      ytp.mute(); // remove from Production
+      toggleWrapperFade();
       console.log('nightingalePlayer event: Ready');
     }
 
@@ -215,6 +217,16 @@ var nightingalePlayer = (function() {
       clearInterval(updateTimer);
     }
 
+		function onReplayBtnClick(){
+			TweenMax.to(s.playerPoster, 0.8, {opacity: 0, onComplete: onReplayBtnClickComplete});
+		}
+
+		function onReplayBtnClickComplete(){
+			s.playerPoster.hide().css('opacity', '1');
+			toggleWrapperFade();
+			ytp.playVideo();
+		}
+
     /*
      ██████ ██    ██ ███████ ████████  ██████  ███    ███
     ██      ██    ██ ██         ██    ██    ██ ████  ████
@@ -223,7 +235,7 @@ var nightingalePlayer = (function() {
      ██████  ██████  ███████    ██     ██████  ██      ██
     */
 
-    function toggleFade(){
+    function toggleWrapperFade(){
       var _o = s.playerWrapper.css('opacity') == 1 ? 0 : 1;
       TweenMax.to(s.playerWrapper, 1, {opacity: _o});
     }
@@ -310,7 +322,7 @@ var nightingalePlayer = (function() {
       }
     }
 
-    function videoSeek(){
+    function onPlayerSeekSlider(){
       clearTimeout(updateTimer);
       var seekValue = ytp.getDuration() * (s.playerSeekSlider.val() / 100);
       ytp.seekTo(seekValue);
@@ -326,11 +338,11 @@ var nightingalePlayer = (function() {
         thumbValue = currentTime * (100 / totalDuration);
 
         s.playerSeekSlider.val(thumbValue);
-        
+
         // scrubber colored trail for played % on track
         var playerBarPerc = (Math.round(thumbValue * 10) / 10).toFixed(1) + '%';
         s.playedBar.width(playerBarPerc);
-        
+
       }, 400);
     }
 
@@ -340,16 +352,8 @@ var nightingalePlayer = (function() {
 
     function onPlayerStateEnded(){
 
-      var _t = new TimelineLite(),
-          _poster = $(s.playerPoster),
-          _share = _poster.find('.share');
-
-      _poster.show();
-
-      _t.to(s.playerPoster, 1, {opacity:1})
-  			.to(_share, 0.75, {top: 500}, '-=1');
-
-      TweenMax.to(s.playerPoster, 0.3, {opacity: 1});
+      s.playerPoster.show();
+			toggleWrapperFade();
     }
 
 })(jQuery, TweenMax);

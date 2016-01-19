@@ -20,6 +20,7 @@ html, body, section#overlay, #ytplayer{
   padding: 0;
 	width: 100%;
   height: 100%;
+  background-color: #222222;
 }
 
 /**
@@ -30,7 +31,7 @@ html, body, section#overlay, #ytplayer{
  */
 *, *::before, *::after {
   box-sizing: inherit;
-} 
+}
 
 /**
  * Basic styles for links
