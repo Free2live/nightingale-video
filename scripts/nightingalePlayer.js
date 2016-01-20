@@ -214,12 +214,22 @@ var nightingalePlayer = (function() {
     }
 
     function onSeekMouseDown() {
+      // pause video and listen for input events (value changes) from dragging
+      ytp.pauseVideo();
+      $(this).on('input', onSeekMouseDrag); // ie8 doesn't support this, SHOCKER http://caniuse.com/#feat=input-event
       s.thumbDragging = true;
       clearInterval(updateTimer);
     }
     
     function onSeekMouseUp() {
+      // resume playing video
+      ytp.playVideo();
       s.thumbDragging = false;
+    }
+    
+    function onSeekMouseDrag() {
+      // update played bar width
+      updatePlayedBar($(this).val());
     }
 
 		function onReplayBtnClick(){
@@ -332,6 +342,11 @@ var nightingalePlayer = (function() {
       var seekValue = ytp.getDuration() * (s.playerSeekSlider.val() / 100);
       ytp.seekTo(seekValue);
     }
+    
+    function updatePlayedBar(value) {
+      var playerBarPerc = (Math.round(value * 10) / 10).toFixed(1) + '%';
+      s.playedBar.width(playerBarPerc);
+    }
 
     function onPlayerStatePlaying(){
 
@@ -345,8 +360,7 @@ var nightingalePlayer = (function() {
         s.playerSeekSlider.val(thumbValue);
 
         // scrubber colored trail for played % on track
-        var playerBarPerc = (Math.round(thumbValue * 10) / 10).toFixed(1) + '%';
-        s.playedBar.width(playerBarPerc);
+        updatePlayedBar(thumbValue);
 
       }, 400);
     }
