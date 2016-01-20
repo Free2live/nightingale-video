@@ -63,7 +63,7 @@ input[type=range]::-moz-range-track {
 	background: #ffffff;
 }
 
-// formerly red / now orange played bar
+// played % bar trail
 
 #seekslider__thumb-trail {
   pointer-events: none;
@@ -72,12 +72,5 @@ input[type=range]::-moz-range-track {
   top: -1px;
   width: 0%;
   height: 2px;
-  background-color: #f44c02;
+  background-color: $accent;
 }
-
-// to be merged in if not already in master branch
-// keep thumb on top of played track
-/*input[type=range]::-webkit-slider-thumb {
-  z-index: 1;
-}
-*/
