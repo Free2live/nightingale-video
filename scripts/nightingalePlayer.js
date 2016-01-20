@@ -43,6 +43,7 @@ var nightingalePlayer = (function() {
 				replayVideoBtn: $('#poster-overlay').find('button'),
         playerSeekSlider: $('#seekslider'),
         playedBar: $('#seekslider__thumb-trail'),
+        thumbDragging: false,
         colorTheme:{
           primary: '#ffffff',
           secondary: '#f44c02'
@@ -86,6 +87,7 @@ var nightingalePlayer = (function() {
 
     function bindCustomEvents(){
       s.playerSeekSlider.on('mousedown', onSeekMouseDown);
+      s.playerSeekSlider.on('mouseup', onSeekMouseUp);
       s.playerSeekSlider.on('change', onPlayerSeekSlider);
       s.standardPlayerControls.on('click', onStandardPlayerControlsClick);
       s.expandingPlayerControlIcon.on('click', onExpandingPlayerControlsClick);
@@ -103,7 +105,7 @@ var nightingalePlayer = (function() {
     function onPlayerReady(event){
 
       event.target.setPlaybackQuality('default');
-      // ytp.mute(); // remove from Production
+      ytp.mute(); // remove from Production
       toggleWrapperFade();
       console.log('nightingalePlayer event: Ready');
     }
@@ -213,8 +215,13 @@ var nightingalePlayer = (function() {
       console.log('nightingalePlayer event: expanding control click');
     }
 
-    function onSeekMouseDown(){
+    function onSeekMouseDown() {
+      s.thumbDragging = true;
       clearInterval(updateTimer);
+    }
+    
+    function onSeekMouseUp() {
+      s.thumbDragging = false;
     }
 
 		function onReplayBtnClick(){
