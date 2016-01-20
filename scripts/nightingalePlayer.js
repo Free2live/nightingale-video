@@ -103,7 +103,7 @@ var nightingalePlayer = (function() {
     function onPlayerReady(event){
       bindCustomEvents();
       event.target.setPlaybackQuality('default');
-      ytp.mute(); // remove from Production
+      //ytp.mute(); // remove from Production
       toggleWrapperFade();
       console.log('nightingalePlayer event: Ready');
     }
