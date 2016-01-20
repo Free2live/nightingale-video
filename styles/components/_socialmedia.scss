@@ -9,7 +9,7 @@ div.controls--social {
       height: 100%;
       width: 100%;
       background: {
-        size: 20px 20px;
+        size: 16px 16px;
         repeat: no-repeat;
         position: center center;
       }
@@ -21,11 +21,11 @@ div.controls--social {
 }
 
 div.controls__standard--share-facebook .flip {
-  background-image: url('../images/icons/social-facebook.svg');
+  background-image: url('../images/icons/social--facebook.svg');
 }
 
 div.controls__standard--share-twitter .flip {
-  background-image: url('../images/icons/social-twitter.svg');
+  background-image: url('../images/icons/social--twitter.svg');
 }
 
 .icon {
