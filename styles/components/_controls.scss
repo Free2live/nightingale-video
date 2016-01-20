@@ -130,6 +130,16 @@
   border-radius: 0 20px 20px 0;
 }
 
+// volume slider
+div.volume {
+  display: inline-block;
+  width: 120px;
+  margin: {
+    right: 12px;
+    top: 5px;
+  }
+}
+
 // anims.scss
 
 // ripple effect
