@@ -76,8 +76,6 @@ var nightingalePlayer = (function() {
           }
         });
 
-        bindCustomEvents();
-
       }else{
         // Throw and error if no target div.
         console.error('nightingalePlayer Error: Cannot initialise, no target div found. Please add a div with id "nightingalePlayer__player" to the page.');
@@ -103,7 +101,7 @@ var nightingalePlayer = (function() {
     */
 
     function onPlayerReady(event){
-
+      bindCustomEvents();
       event.target.setPlaybackQuality('default');
       ytp.mute(); // remove from Production
       toggleWrapperFade();
