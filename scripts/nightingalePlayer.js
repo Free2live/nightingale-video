@@ -196,7 +196,7 @@ var nightingalePlayer = (function() {
 
     function onExpandingPlayerControlsClick(){
 
-      var _activeElems = [s.controlsContainer, s.exapandingPlayerControls];
+      var _activeElems = [s.controlsContainer, s.expandingPlayerControls];
 
       if(!s.controlsContainer.hasClass('active')){
         s.controlsContainer.css( "width", s.controlsList.width() + 20).find('ul').delay(500).fadeIn(500);
