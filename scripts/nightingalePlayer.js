@@ -86,9 +86,9 @@ var nightingalePlayer = (function() {
     }
 
     function bindCustomEvents(){
-      s.playerSeekSlider.on('mousedown', onSeekMouseDown);
-      s.playerSeekSlider.on('mouseup', onSeekMouseUp);
-      s.playerSeekSlider.on('change', onPlayerSeekSlider);
+      s.playerSeekSlider.on('mousedown', onSeekMouseDown)
+      .on('mouseup', onSeekMouseUp)
+      .on('change', onPlayerSeekSlider);
       s.standardPlayerControls.on('click', onStandardPlayerControlsClick);
       s.expandingPlayerControlIcon.on('click', onExpandingPlayerControlsClick);
 			s.replayVideoBtn.on('click', onReplayBtnClick);
