@@ -44,6 +44,8 @@ var nightingalePlayer = (function() {
         playerSeekSlider: $('#seekslider'),
         playedBar: $('#seekslider__thumb-trail'),
         thumbDragging: false,
+        volContainer: $('.volume'),
+        volSlider: $('.volume input'),
         colorTheme:{
           primary: '#ffffff',
           secondary: '#f44c02'
@@ -90,6 +92,8 @@ var nightingalePlayer = (function() {
       s.standardPlayerControls.on('click', onStandardPlayerControlsClick);
       s.expandingPlayerControlIcon.on('click', onExpandingPlayerControlsClick);
 			s.replayVideoBtn.on('click', onReplayBtnClick);
+      s.volContainer.on('click', onVolumeContainerInteract);
+      s.volSlider.on('input change', onVolumeSliderInteract);
     }
 
     /*
@@ -241,7 +245,7 @@ var nightingalePlayer = (function() {
 			toggleWrapperFade();
 			ytp.playVideo();
 		}
-
+    
     /*
      ██████ ██    ██ ███████ ████████  ██████  ███    ███
     ██      ██    ██ ██         ██    ██    ██ ████  ████
@@ -347,7 +351,24 @@ var nightingalePlayer = (function() {
       var playerBarPerc = (Math.round(value * 10) / 10).toFixed(1) + '%';
       s.playedBar.width(playerBarPerc);
     }
-
+    
+    // volume container
+    function onVolumeContainerInteract(e) {
+      e.stopPropagation();
+    }
+    // volume slider
+    function onVolumeSliderInteract(e) {
+      e.stopPropagation();
+      var volume = parseInt($(this).val());
+      if (volume !== 0) {
+        ytp.unMute();
+        ytp.setVolume(volume);
+      } else if (volume === 0) {
+        ytp.mute();
+      }
+      console.log('bar');
+    }
+    
     function onPlayerStatePlaying(){
 
       // Get current vid duration and set up interval timer to move silder thumb along the track

@@ -136,7 +136,16 @@ div.volume {
   width: 120px;
   margin: {
     right: 12px;
-    top: 5px;
+    top: 7px;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    height: 4px;
+    background-color: $accent;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    height: 12px;
+    width: 12px;
+    top: 7px;
   }
 }
 
