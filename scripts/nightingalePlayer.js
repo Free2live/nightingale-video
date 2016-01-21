@@ -179,7 +179,7 @@ var nightingalePlayer = (function() {
     function onStandardPlayerControlsClick(){
 
 			var _id = $(this).attr('id');
-
+      
       console.log('nightingalePlayer event: Standard control click (' + _id + ')');
 
       switch(_id){
@@ -193,10 +193,13 @@ var nightingalePlayer = (function() {
         break;
 
         case 'controls__standard--toggle-mute':
-          if (ytp.isMuted()) {
-              ytp.unMute();
-          } else {
+          if (!ytp.isMuted()) {
               ytp.mute();
+              s.volSlider.val(0);
+          } else {
+              ytp.unMute();
+              s.volSlider.val(50);
+              ytp.setVolume(50);
           }
         break;
 
