@@ -15,6 +15,7 @@ var nightingalePlayer = (function() {
   });
 
   var s,
+			d = $(document),
       ytp,
       availableQuality,
       previousQualityState,
@@ -41,6 +42,7 @@ var nightingalePlayer = (function() {
         controlsContainer: $('#controls__expanding_centre'),
         playPauseBtn: $('#controls__standard--play-pause'),
         muteToggleBtn: $('#controls__standard--toggle-mute'),
+				fsToggleBtn: $('#controls__standard--fs'),
         playerSeekSlider: $('#seekslider'),
         playedBar: $('#seekslider__thumb-trail'),
         thumbDragging: false,
@@ -51,11 +53,11 @@ var nightingalePlayer = (function() {
         },
         // Any settings that need object self reference can be defined here (free country) (git blame bfwsharp@gmail.com)
         initSettingsChildren: function() {
-          
+
           this.replayVideoBtn = this.playerPoster.find('button');
           this.controlsList = this.controlsContainer.find('ul');
           this.volSlider = this.volContainer.find('input');
-          
+
           delete this.initSettingsChildren;
           return this;
         }
@@ -96,6 +98,7 @@ var nightingalePlayer = (function() {
     }
 
     function bindCustomEvents(){
+			d.on('webkitfullscreenchange mozfullscreenchange fullscreenchange MSFullscreenChange', onFullscreenChange);
       s.playerSeekSlider.on('mousedown', onSeekMouseDown)
       .on('mouseup', onSeekMouseUp)
       .on('change', onPlayerSeekSlider);
@@ -119,7 +122,7 @@ var nightingalePlayer = (function() {
     function onPlayerReady(event){
       bindCustomEvents();
       event.target.setPlaybackQuality('default');
-      //ytp.mute(); // remove from Production
+      ytp.mute(); // remove from Production
       toggleWrapperFade();
       console.log('nightingalePlayer event: Ready');
     }
@@ -176,6 +179,10 @@ var nightingalePlayer = (function() {
     ██      ███████ ██   ██    ██    ███████ ██   ██     ███████   ████   ███████ ██   ████    ██    ███████
     */
 
+		function onFullscreenChange(){
+			s.fsToggleBtn.toggleClass('active');
+		}
+
     function onStandardPlayerControlsClick(){
 
 			var _id = $(this).attr('id');
@@ -201,15 +208,12 @@ var nightingalePlayer = (function() {
               s.volSlider.val(50);
               ytp.setVolume(50);
           }
+					$(this).toggleClass('active');
         break;
 
         case 'controls__standard--fs':
           requestFullScreen($(this).hasClass('active'));
         break;
-      }
-
-      if(_id != 'controls__standard--play-pause'){
-        $(this).toggleClass('active');
       }
     }
 
@@ -239,13 +243,13 @@ var nightingalePlayer = (function() {
       s.thumbDragging = true;
       clearInterval(updateTimer);
     }
-    
+
     function onSeekMouseUp() {
       // resume playing video
       ytp.playVideo();
       s.thumbDragging = false;
     }
-    
+
     function onSeekMouseDrag() {
       // update played bar width
       updatePlayedBar($(this).val());
@@ -260,7 +264,7 @@ var nightingalePlayer = (function() {
 			toggleWrapperFade();
 			ytp.playVideo();
 		}
-    
+
     /*
      ██████ ██    ██ ███████ ████████  ██████  ███    ███
     ██      ██    ██ ██         ██    ██    ██ ████  ████
@@ -361,12 +365,12 @@ var nightingalePlayer = (function() {
       var seekValue = ytp.getDuration() * (s.playerSeekSlider.val() / 100);
       ytp.seekTo(seekValue);
     }
-    
+
     function updatePlayedBar(value) {
       var playerBarPerc = (Math.round(value * 10) / 10).toFixed(1) + '%';
       s.playedBar.width(playerBarPerc);
     }
-    
+
     // prevent accidental closes while dragging volume slider
     function onVolumeContainerInteract(e) {
       e.stopPropagation();
@@ -384,14 +388,14 @@ var nightingalePlayer = (function() {
         s.muteToggleBtn.removeClass('active');
       }
     }
-    
+
     function onMuteToggleHover() {
       s.volContainer.addClass('active');
       s.volContainer.animate({
         width: '120px'
       }, 150, 'easeInOutQuad');
     }
-    
+
     function onControlsBlur() {
       s.volContainer.animate({
         width: '0'
@@ -399,7 +403,7 @@ var nightingalePlayer = (function() {
         s.volContainer.removeClass('active');
       });
     }
-    
+
     function onPlayerStatePlaying(){
 
       // Get current vid duration and set up interval timer to move silder thumb along the track
