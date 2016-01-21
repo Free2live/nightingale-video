@@ -1,3 +1,36 @@
  #logo {
-   width: 286px;
+   width: 320px;
+   margin-top: 10px;
+   margin-left: auto;
+   margin-right: auto;
+   span {
+     height: auto;
+     display: inline-block;
+     margin: 0;
+     padding: 0;
+     float: left;
+     overflow: hidden;
+     vertical-align: bottom;
+   }
+   span.sigma {
+     width: 40%;
+     //border: 1px solid red;
+   }
+   span.x {
+     width: 20%;
+     //border: 1px solid white;
+   }
+   span.libratone {
+     width: 40%;
+     //border: 1px solid blue;
+     position: relative;
+     top: -10px;
+   }
+   svg {
+     transition: all 0.15s ease-in;
+     padding-bottom: 2px;
+     &:hover {
+       box-shadow: 5px 5px 30px $accent;
+     }
+   }
  }
