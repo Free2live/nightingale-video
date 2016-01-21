@@ -38,24 +38,32 @@ var nightingalePlayer = (function() {
         expandingPlayerControls: $('.controls__expanding'),
         expandingPlayerControlIcon: $('.controls__expanding__icon'),
         controlsContainer: $('#controls__expanding_centre'),
-        controlsList: $('#controls__expanding_centre ul'),
         playPauseBtn: $('#controls__standard--play-pause'),
         muteToggleBtn: $('#controls__standard--toggle-mute'),
-				replayVideoBtn: $('#poster-overlay').find('button'),
         playerSeekSlider: $('#seekslider'),
         playedBar: $('#seekslider__thumb-trail'),
         thumbDragging: false,
         volContainer: $('.volume'),
-        volSlider: $('.volume input'),
         colorTheme:{
           primary: '#ffffff',
           secondary: '#f44c02'
+        },
+        // Any settings that need object self reference can be defined here (free country) (git blame bfwsharp@gmail.com)
+        initSettingsChildren: function() {
+          
+          this.replayVideoBtn = this.playerPoster.find('button');
+          this.controlsList = this.controlsContainer.find('ul');
+          this.volSlider = this.volContainer.find('input');
+          
+          delete this.initSettingsChildren;
+          return this;
         }
     };
 
     function init(){
 
       s = settings;
+      s.initSettingsChildren();
 
       // check to see if target div exists before initialising
       if(s.playerElem.length){
