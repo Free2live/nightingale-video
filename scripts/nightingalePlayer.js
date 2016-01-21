@@ -34,6 +34,7 @@ var nightingalePlayer = (function() {
         showPlayerInfo: 0,
         showRelatedContent: 0,
         enableModestBranding: 1,
+        allControlsWrapper: $('.controls'),
         standardPlayerControls: $('.controls__standard'),
         expandingPlayerControls: $('.controls__expanding'),
         expandingPlayerControlIcon: $('.controls__expanding__icon'),
@@ -103,6 +104,8 @@ var nightingalePlayer = (function() {
 			s.replayVideoBtn.on('click', onReplayBtnClick);
       s.volContainer.on('click', onVolumeContainerInteract);
       s.volSlider.on('input change', onVolumeSliderInteract);
+      s.muteToggleBtn.on('mouseover', onMuteToggleHover);
+      s.allControlsWrapper.on('mouseleave', onControlsBlur);
     }
 
     /*
@@ -377,6 +380,21 @@ var nightingalePlayer = (function() {
         ytp.mute();
         s.muteToggleBtn.removeClass('active');
       }
+    }
+    
+    function onMuteToggleHover() {
+      s.volContainer.addClass('active');
+      s.volContainer.animate({
+        width: '120px'
+      }, 150, 'easeInOutQuad');
+    }
+    
+    function onControlsBlur() {
+      s.volContainer.animate({
+        width: '0'
+      }, 200, 'easeInOutQuad', function() {
+        s.volContainer.removeClass('active');
+      });
     }
     
     function onPlayerStatePlaying(){

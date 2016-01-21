@@ -132,20 +132,23 @@
 
 // volume slider
 div.volume {
-  display: inline-block;
-  width: 120px;
+  display: none;
+  width: 0px;
   margin: {
     right: 12px;
     top: 7px;
   }
   input[type=range]::-webkit-slider-runnable-track {
-    height: 4px;
+    height: 2px;
     background-color: $accent;
   }
   input[type=range]::-webkit-slider-thumb {
     height: 12px;
     width: 12px;
-    top: 7px;
+    top: 6px;
+  }
+  &.active {
+    display: inline-block;
   }
 }
 
