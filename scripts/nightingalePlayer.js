@@ -40,6 +40,7 @@ var nightingalePlayer = (function() {
         controlsContainer: $('#controls__expanding_centre'),
         controlsList: $('#controls__expanding_centre ul'),
         playPauseBtn: $('#controls__standard--play-pause'),
+        muteToggleBtn: $('#controls__standard--toggle-mute'),
 				replayVideoBtn: $('#poster-overlay').find('button'),
         playerSeekSlider: $('#seekslider'),
         playedBar: $('#seekslider__thumb-trail'),
@@ -352,21 +353,22 @@ var nightingalePlayer = (function() {
       s.playedBar.width(playerBarPerc);
     }
     
-    // volume container
+    // prevent accidental closes while dragging volume slider
     function onVolumeContainerInteract(e) {
       e.stopPropagation();
     }
-    // volume slider
+    // get value of volume slider and translate into ytp volume
     function onVolumeSliderInteract(e) {
       e.stopPropagation();
       var volume = parseInt($(this).val());
       if (volume !== 0) {
         ytp.unMute();
         ytp.setVolume(volume);
+        s.muteToggleBtn.addClass('active');
       } else if (volume === 0) {
         ytp.mute();
+        s.muteToggleBtn.removeClass('active');
       }
-      console.log('bar');
     }
     
     function onPlayerStatePlaying(){
