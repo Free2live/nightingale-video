@@ -35,7 +35,7 @@ var nightingalePlayer = (function() {
         // Define player elements
         $playerWrapper: $('#nightingalePlayer'),
         $playerElem: $('#nightingalePlayer__player'),
-        $playerPoster: $('#poster-overlay'),
+        $playerEndframe: $('#endframe-overlay'),
         $allControlsWrapper: $('.controls'),
         $standardPlayerControls: $('.controls__standard'),
         $expandingPlayerControls: $('.controls__expanding'),
@@ -65,7 +65,7 @@ var nightingalePlayer = (function() {
 
         initSettingsChildren: function() {
           // Settings that need sibling reference
-          this.$replayVideoBtn = this.$playerPoster.find('button');
+          this.$replayVideoBtn = this.$playerEndframe.find('button');
           this.$controlsList = this.$controlsContainer.find('ul');
           this.$volSlider = this.$volContainer.find('input');
           this.$isPlayerDeferred = this.$playerElem.data('defer');
@@ -152,7 +152,7 @@ var nightingalePlayer = (function() {
       // ytp.mute();
 
       // Fade the player up
-      togglePlayerWrapperFade();
+      s.$playerWrapper.fadeIn(3000);
 
       console.log('nightingalePlayer event: Ready');
     }
@@ -292,13 +292,13 @@ var nightingalePlayer = (function() {
 
     // On REPLAY button mouse CLICK
     function onReplayBtnClick(){
-      TweenMax.to(s.$playerPoster, 0.8, {opacity: 0, onComplete: onPosterFadeOutComplete});
+      TweenMax.to(s.$playerEndframe, 0.8, {opacity: 0, onComplete: onPosterFadeOutComplete});
     }
 
     // On POSTER fade out
     function onPosterFadeOutComplete(){
-      s.$playerPoster.hide().css('opacity', '1');
-      togglePlayerWrapperFade();
+      s.$playerEndframe.hide().css('opacity', '1');
+      s.$playerWrapper.fadeIn(3000);
       ytp.playVideo();
     }
 
@@ -364,6 +364,12 @@ var nightingalePlayer = (function() {
         updatePlayedBar(thumbValue);
 
       }, 400);
+
+      // Hide the endframe if it is visible and the video starts playing
+      if (s.$playerEndframe.is(':visible')) {
+        s.$playerEndframe.hide();
+        s.$playerWrapper.show();
+      }
     }
 
     function onPlayerStateBuffering(){
@@ -372,19 +378,13 @@ var nightingalePlayer = (function() {
 
     function onPlayerStateEnded(){
       // show the end frame, fade player out behind it.
-      s.$playerPoster.show();
-      togglePlayerWrapperFade();
+      s.$playerEndframe.show();
+      s.$playerWrapper.hide();
     }
 
     /*******************************************************************************
     * nightingalePlayer Functions
     ******************************************************************************/
-
-    // Toggle player wrapper opacity (Fade up / Down) - has some issues in chrome fullscreen & onReady
-    function togglePlayerWrapperFade(){
-      var _o = s.$playerWrapper.css('opacity') == 1 ? 0 : 1;
-      TweenMax.to(s.$playerWrapper, 1, {opacity: _o});
-    }
 
     // Get, format & insert available quality levels for the player control
     function updateAvailableQualityUI(qualityLevel){
