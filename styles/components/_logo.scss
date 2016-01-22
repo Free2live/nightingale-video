@@ -11,20 +11,21 @@
      float: left;
      overflow: hidden;
      vertical-align: bottom;
+     position: relative;
    }
    span.sigma {
+     top: 1px;
      width: 40%;
      //border: 1px solid red;
    }
    span.x {
+     margin-top: 10px;
      width: 20%;
      //border: 1px solid white;
    }
    span.libratone {
      width: 40%;
-     //border: 1px solid blue;
-     position: relative;
-     top: -10px;
+     top: -5px;
    }
    svg {
      transition: all 0.15s ease-in;
