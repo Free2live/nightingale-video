@@ -292,12 +292,11 @@ var nightingalePlayer = (function() {
 
     // On REPLAY button mouse CLICK
     function onReplayBtnClick(){
-      TweenMax.to(s.$playerEndframe, 0.8, {opacity: 0, onComplete: onPosterFadeOutComplete});
+      s.$playerEndframe.fadeOut({duration : 800, complete: onPosterFadeOutComplete});
     }
 
-    // On POSTER fade out
+    // On POSTER fade out COMPLETE
     function onPosterFadeOutComplete(){
-      s.$playerEndframe.hide().css('opacity', '1');
       s.$playerWrapper.fadeIn(3000);
       ytp.playVideo();
     }
@@ -377,7 +376,7 @@ var nightingalePlayer = (function() {
     }
 
     function onPlayerStateEnded(){
-      // show the end frame, fade player out behind it.
+      // show the end frame, hide player behind it.
       s.$playerEndframe.show();
       s.$playerWrapper.hide();
     }
@@ -476,4 +475,4 @@ var nightingalePlayer = (function() {
       }
     }
 
-})($, TweenMax);
+})($);
