@@ -1,5 +1,6 @@
-var YTdeferred = jQuery.Deferred();
 
+// Set YT Deferred
+var YTdeferred = $.Deferred();
 window.onYouTubeIframeAPIReady = function() {
 	YTdeferred.resolve(window.YT);
 };
@@ -7,12 +8,16 @@ window.onYouTubeIframeAPIReady = function() {
 // nightingalePlayer constructor
 var nightingalePlayer = (function() {
 
+	// YouTube API ajax call
 	$.getScript( "https://www.youtube.com/player_api")
-		.done(function( script, textStatus ) {
+		.done(function(script, textStatus) {
+	}).fail(function( jqxhr, settings, exception ) {
+    console.error('nightingalePlayer error: failed to load YouTube player api');
 	});
 
+	// YT Deferred callback
 	YTdeferred.done(function(YT) {
-		init();
+			init();
 	});
 
 	// Player vars
@@ -61,6 +66,7 @@ var nightingalePlayer = (function() {
           this.$replayVideoBtn = this.$playerPoster.find('button');
           this.$controlsList = this.$controlsContainer.find('ul');
           this.$volSlider = this.$volContainer.find('input');
+					this.$isPlayerDeferred = this.$playerElem.data('defer');
 
           delete this.initSettingsChildren;
           return this;
@@ -135,7 +141,7 @@ var nightingalePlayer = (function() {
    ██       ██        ███████   ████      ██        ██   ██ ██   ██ ██   ████ ██████  ███████ ███████
 */
 
-		//
+		// YouTube player ready
     function onPlayerReady(event){
 
 			// Bind custom events
@@ -145,7 +151,7 @@ var nightingalePlayer = (function() {
       event.target.setPlaybackQuality('default');
 
 			// Mute the player while in dev so we do not go insane. If you see this in production, whoopseeeeeeeeeee.
-      ytp.mute();
+      // ytp.mute();
 
 			// Fade the player up
       togglePlayerWrapperFade();
@@ -442,11 +448,15 @@ var nightingalePlayer = (function() {
 
 		// Update quality display in the UI
     function updateQualityDisplay(previousQualityState, currentQualityState){
-      $('#controls__video_quality__'+previousQualityState).css('color', s.colorTheme.primary);
-      $('#controls__video_quality__'+currentQualityState).css('color', s.colorTheme.secondary);
+
+			var _videoControl = '#controls__video_quality__',
+					_cssProp = 'color';
+
+      $(_videoControl+previousQualityState).css(_cssProp, s.colorTheme.primary);
+      $(_videoControl+currentQualityState).css(_cssProp, s.colorTheme.secondary);
     }
 
-		// Update played bar (coloured bar behind the thumb) on updateTimer tick & seek bar change event
+		// Update played bar (coloured bar behind the thumb slider) on updateTimer tick & seek bar change event
 		function updatePlayedBar(value) {
 			var playerBarPerc = (Math.round(value * 10) / 10).toFixed(1) + '%';
 			s.$playedBar.width(playerBarPerc);
@@ -476,4 +486,4 @@ var nightingalePlayer = (function() {
       }
     }
 
-})(jQuery, TweenMax);
+})($, TweenMax);
