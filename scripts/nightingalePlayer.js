@@ -8,40 +8,42 @@ window.onYouTubeIframeAPIReady = function() {
 // nightingalePlayer constructor
 var nightingalePlayer = (function() {
 
-	// YouTube API ajax call
-	$.getScript( "https://www.youtube.com/player_api")
-		.done(function(script, textStatus) {
-	}).fail(function( jqxhr, settings, exception ) {
+  // YouTube API ajax call
+  $.getScript( "https://www.youtube.com/player_api")
+    .done(function(script, textStatus) {
+    }).fail(function( jqxhr, settings, exception ) {
     console.error('nightingalePlayer error: failed to load YouTube player api');
-	});
+  });
 
-	// YT Deferred callback
-	YTdeferred.done(function(YT) {
-			init();
-	});
+  // YT Deferred callback
+  YTdeferred.done(function(YT) {
+    if(window.innerWidth > 760){
+      init();
+    }
+  });
 
-	// Player vars
+  // Player vars
   var $d = $(document),
-			updateTimer,
-			totalDuration,
-			previousQualityState,
-			availableQuality,
-			ytp,
-			s,
-			// Player settings
+      updateTimer,
+      totalDuration,
+      previousQualityState,
+      availableQuality,
+      ytp,
+      s,
+      // Player settings
       settings = {
-				// Define player elements
+        // Define player elements
         $playerWrapper: $('#nightingalePlayer'),
         $playerElem: $('#nightingalePlayer__player'),
         $playerPoster: $('#poster-overlay'),
-				$allControlsWrapper: $('.controls'),
+        $allControlsWrapper: $('.controls'),
         $standardPlayerControls: $('.controls__standard'),
         $expandingPlayerControls: $('.controls__expanding'),
         $expandingPlayerControlIcon: $('.controls__expanding__icon'),
         $controlsContainer: $('#controls__expanding_centre'),
         $playPauseBtn: $('#controls__standard--play-pause'),
         $muteToggleBtn: $('#controls__standard--toggle-mute'),
-				$fsToggleBtn: $('#controls__standard--fs'),
+        $fsToggleBtn: $('#controls__standard--fs'),
         $playerSeekSlider: $('#seekslider'),
         $playedBar: $('#seekslider__thumb-trail'),
         thumbDragging: false,
@@ -50,8 +52,8 @@ var nightingalePlayer = (function() {
           primary: '#ffffff',
           secondary: '#f44c02'
         },
-				// YouTube Api params
-				playerWidth: '100%',
+        // YouTube Api params
+        playerWidth: '100%',
         playerHeight: '100%',
         videoKey: 'Mnf15KwPV-Q',
         autoPlay: 1,
@@ -62,11 +64,11 @@ var nightingalePlayer = (function() {
         enableModestBranding: 1,
 
         initSettingsChildren: function() {
-					// Settings that need sibling reference
+          // Settings that need sibling reference
           this.$replayVideoBtn = this.$playerPoster.find('button');
           this.$controlsList = this.$controlsContainer.find('ul');
           this.$volSlider = this.$volContainer.find('input');
-					this.$isPlayerDeferred = this.$playerElem.data('defer');
+          this.$isPlayerDeferred = this.$playerElem.data('defer');
 
           delete this.initSettingsChildren;
           return this;
@@ -75,14 +77,14 @@ var nightingalePlayer = (function() {
 
     function init(){
 
-			// Initialise player settings (use s for shorthand and set up siblings)
+      // Initialise player settings (use s for shorthand and set up siblings)
       s = settings;
       s.initSettingsChildren();
 
       // Check for target div
       if(s.$playerElem.length){
 
-				// New up YouTube player with player settings
+        // New up YouTube player with player settings
         ytp = new YT.Player(s.$playerElem.attr('id'), {
             width: s.playerWidth,
             height: s.playerHeight,
@@ -109,47 +111,47 @@ var nightingalePlayer = (function() {
 
     }
 
-		// Bind custom player events
+    // Bind custom player events
     function bindCustomEvents(){
-			// DOCUMENT on FULLSCREEN
-			$d.on('webkitfullscreenchange mozfullscreenchange fullscreenchange MSFullscreenChange', onFullscreenChange);
-			// SEEK slider on MOUSE DOWN / UP / CHANGE
+      // DOCUMENT on FULLSCREEN
+      $d.on('webkitfullscreenchange mozfullscreenchange fullscreenchange MSFullscreenChange', onFullscreenChange);
+      // SEEK slider on MOUSE DOWN / UP / CHANGE
       s.$playerSeekSlider.on('mousedown', onSeekMouseDown)
       .on('mouseup', onSeekMouseUp)
       .on('change', onPlayerSeekSlider);
-			// STANDARD player control on CLICK
+      // STANDARD player control on CLICK
       s.$standardPlayerControls.on('click', onStandardPlayerControlsClick);
-			// EXPANDING player control on CLICK
+      // EXPANDING player control on CLICK
       s.$expandingPlayerControlIcon.on('click', onExpandingPlayerControlsClick);
-			// REPLAY video button on CLICK
-			s.$replayVideoBtn.on('click', onReplayBtnClick);
-			// VOLUME container on CLICK
+      // REPLAY video button on CLICK
+      s.$replayVideoBtn.on('click', onReplayBtnClick);
+      // VOLUME container on CLICK
       s.$volContainer.on('click', onVolumeContainerInteract);
-			// VOLUME slider on INPUT CHANGE
+      // VOLUME slider on INPUT CHANGE
       s.$volSlider.on('input change', onVolumeSliderInteract);
-			// MUTE button on MOUSEOVER
+      // MUTE button on MOUSEOVER
       s.$muteToggleBtn.on('mouseover', onMuteToggleHover);
-			// MUTE button on MOUSELEAVE
+      // MUTE button on MOUSELEAVE
       s.$allControlsWrapper.on('mouseleave', onControlsBlur);
     }
 
-		/*******************************************************************************
-		 * Youtube Event Handlers
-		 ******************************************************************************/
+    /*******************************************************************************
+    * Youtube Event Handlers
+    ******************************************************************************/
 
-		// YouTube player ready
+    // YouTube player ready
     function onPlayerReady(event){
 
-			// Bind custom events
+      // Bind custom events
       bindCustomEvents();
 
-			// Set YouTube player to default quality state for appropriate playback quality
+      // Set YouTube player to default quality state for appropriate playback quality
       event.target.setPlaybackQuality('default');
 
-			// Mute the player while in dev so we do not go insane. If you see this in production, whoopseeeeeeeeeee.
+      // Mute the player while in dev so we do not go insane. If you see this in production, whoopseeeeeeeeeee.
       // ytp.mute();
 
-			// Fade the player up
+      // Fade the player up
       togglePlayerWrapperFade();
 
       console.log('nightingalePlayer event: Ready');
@@ -163,11 +165,11 @@ var nightingalePlayer = (function() {
       if(typeof availableQuality === 'undefined'){
         // Get available qualities
         availableQuality = ytp.getAvailableQualityLevels();
-				// Set available qualities
+        // Set available qualities
         updateAvailableQualityUI(availableQuality);
       }
 
-			// YouTube Player States
+      // YouTube Player States
       if(event.data == YT.PlayerState.BUFFERING){
         onPlayerStateBuffering();
         console.log('nightingalePlayer state: BUFFERING');
@@ -177,7 +179,7 @@ var nightingalePlayer = (function() {
         onPlayerStatePlaying();
         console.log('nightingalePlayer state: PLAYING');
       } else {
-				// Stops the seek bar if not playing
+        // Stops the seek bar if not playing
         clearTimeout(updateTimer);
       }
 
@@ -197,24 +199,24 @@ var nightingalePlayer = (function() {
     }
 
     function onPlaybackQualityChange(event){
-			// Update HD player control to reflect quality change
+      // Update HD player control to reflect quality change
       updateQualityDisplay(previousQualityState, ytp.getPlaybackQuality());
       console.log('nightingalePlayer event: Quality change');
     }
 
-		/*******************************************************************************
-		 * nightingalePlayer Event Handlers
-		 ******************************************************************************/
+    /*******************************************************************************
+    * nightingalePlayer Event Handlers
+    ******************************************************************************/
 
-		// On FULLSCREEN change
-		function onFullscreenChange(){
-			s.$fsToggleBtn.toggleClass('active');
-		}
+    // On FULLSCREEN change
+    function onFullscreenChange(){
+      s.$fsToggleBtn.toggleClass('active');
+    }
 
-		// On STANDARD player control CLICK
+    // On STANDARD player control CLICK
     function onStandardPlayerControlsClick(){
 
-			var _id = $(this).attr('id');
+      var _id = $(this).attr('id');
 
       console.log('nightingalePlayer event: Standard control click (' + _id + ')');
 
@@ -237,7 +239,7 @@ var nightingalePlayer = (function() {
               s.$volSlider.val(50);
               ytp.setVolume(50);
           }
-					$(this).toggleClass('active');
+          $(this).toggleClass('active');
         break;
 
         case 'controls__standard--fs':
@@ -246,7 +248,7 @@ var nightingalePlayer = (function() {
       }
     }
 
-		// On EXPANDING player control CLICK
+    // On EXPANDING player control CLICK
     function onExpandingPlayerControlsClick(){
 
       var _activeElems = [s.$controlsContainer, s.$expandingPlayerControls];
@@ -266,7 +268,7 @@ var nightingalePlayer = (function() {
       console.log('nightingalePlayer event: expanding control click');
     }
 
-		// On SEEK slider MOUSE DOWN
+    // On SEEK slider MOUSE DOWN
     function onSeekMouseDown() {
       // pause video and listen for input events (value changes) from dragging
       ytp.pauseVideo();
@@ -275,47 +277,47 @@ var nightingalePlayer = (function() {
       clearInterval(updateTimer);
     }
 
-		// On SEEK slider MOUSE UP
+    // On SEEK slider MOUSE UP
     function onSeekMouseUp() {
       // resume playing video
       ytp.playVideo();
       s.thumbDragging = false;
     }
 
-		// On SEEK slider MOUSE DRAG
+    // On SEEK slider MOUSE DRAG
     function onSeekMouseDrag() {
       // update played bar width
       updatePlayedBar($(this).val());
     }
 
-		// On REPLAY button mouse CLICK
-		function onReplayBtnClick(){
-			TweenMax.to(s.$playerPoster, 0.8, {opacity: 0, onComplete: onPosterFadeOutComplete});
-		}
+    // On REPLAY button mouse CLICK
+    function onReplayBtnClick(){
+      TweenMax.to(s.$playerPoster, 0.8, {opacity: 0, onComplete: onPosterFadeOutComplete});
+    }
 
-		// On POSTER fade out
-		function onPosterFadeOutComplete(){
-			s.$playerPoster.hide().css('opacity', '1');
-			togglePlayerWrapperFade();
-			ytp.playVideo();
-		}
+    // On POSTER fade out
+    function onPosterFadeOutComplete(){
+      s.$playerPoster.hide().css('opacity', '1');
+      togglePlayerWrapperFade();
+      ytp.playVideo();
+    }
 
-		// On CONTROL resolution quality CLICK
-		function onQualitySelect(event){
+    // On CONTROL resolution quality CLICK
+    function onQualitySelect(event){
       // Store previous quality state for reference during update of color values onPlaybackQualityChange()
       previousQualityState = ytp.getPlaybackQuality();
     }
 
-		// On SEEK slider CHANGE
-		function onPlayerSeekSlider(){
+    // On SEEK slider CHANGE
+    function onPlayerSeekSlider(){
       clearTimeout(updateTimer);
       var seekValue = ytp.getDuration() * (s.$playerSeekSlider.val() / 100);
       ytp.seekTo(seekValue);
     }
 
-		// On VOLUME container CLICK
+    // On VOLUME container CLICK
     function onVolumeContainerInteract(e) {
-			// Prevent accidental closes while dragging volume slider
+      // Prevent accidental closes while dragging volume slider
       e.stopPropagation();
     }
     // get value of volume slider and translate into ytp volume
@@ -369,22 +371,22 @@ var nightingalePlayer = (function() {
     }
 
     function onPlayerStateEnded(){
-			// show the end frame, fade player out behind it.
+      // show the end frame, fade player out behind it.
       s.$playerPoster.show();
-			togglePlayerWrapperFade();
+      togglePlayerWrapperFade();
     }
 
-		/*******************************************************************************
-		 * nightingalePlayer Functions
-		 ******************************************************************************/
+    /*******************************************************************************
+    * nightingalePlayer Functions
+    ******************************************************************************/
 
-		// Toggle player wrapper opacity (Fade up / Down) - has some issues in chrome fullscreen & onReady
+    // Toggle player wrapper opacity (Fade up / Down) - has some issues in chrome fullscreen & onReady
     function togglePlayerWrapperFade(){
       var _o = s.$playerWrapper.css('opacity') == 1 ? 0 : 1;
       TweenMax.to(s.$playerWrapper, 1, {opacity: _o});
     }
 
-		// Get, format & insert available quality levels for the player control
+    // Get, format & insert available quality levels for the player control
     function updateAvailableQualityUI(qualityLevel){
 
       // Loop through available qualities
@@ -434,23 +436,23 @@ var nightingalePlayer = (function() {
       });
     }
 
-		// Update quality display in the UI
+    // Update quality display in the UI
     function updateQualityDisplay(previousQualityState, currentQualityState){
 
-			var _videoControl = '#controls__video_quality__',
-					_cssProp = 'color';
+      var _videoControl = '#controls__video_quality__',
+      _cssProp = 'color';
 
       $(_videoControl+previousQualityState).css(_cssProp, s.colorTheme.primary);
       $(_videoControl+currentQualityState).css(_cssProp, s.colorTheme.secondary);
     }
 
-		// Update played bar (coloured bar behind the thumb slider) on updateTimer tick & seek bar change event
-		function updatePlayedBar(value) {
-			var playerBarPerc = (Math.round(value * 10) / 10).toFixed(1) + '%';
-			s.$playedBar.width(playerBarPerc);
-		}
+    // Update played bar (coloured bar behind the thumb slider) on updateTimer tick & seek bar change event
+    function updatePlayedBar(value) {
+      var playerBarPerc = (Math.round(value * 10) / 10).toFixed(1) + '%';
+      s.$playedBar.width(playerBarPerc);
+    }
 
-		// Fullscreen handler
+    // Fullscreen handler
     function requestFullScreen(isFullscreen){
 
       var _requestMethod,
