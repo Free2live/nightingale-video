@@ -1,5 +1,7 @@
 (function($) {
 
+  PointerEventsPolyfill.initialize({});
+  
   // player deferred callback on API Ready
   nightingaleYTDeferred.done(function(YT) {
 

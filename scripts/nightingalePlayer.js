@@ -1,4 +1,4 @@
-PointerEventsPolyfill.initialize({});
+
 // Set player YT Deferred
 var nightingaleYTDeferred = $.Deferred();
 window.onYouTubeIframeAPIReady = function() {
@@ -35,6 +35,7 @@ var nightingalePlayer = (function() {
         $playPauseBtn: $('#controls__standard--play-pause'),
         $muteToggleBtn: $('#controls__standard--toggle-mute'),
         $fsToggleBtn: $('#controls__standard--fs'),
+        $facebookShareBtn: $('#facebook-share'),
         $playerSeekSlider: $('#seekslider'),
         $playedBar: $('#seekslider__thumb-trail'),
         thumbDragging: false,
@@ -43,6 +44,7 @@ var nightingalePlayer = (function() {
           primary: '#ffffff',
           secondary: '#f44c02'
         },
+
         //Overridable default settings
         defaults: {
           videoKey: 'Mnf15KwPV-Q',
@@ -86,7 +88,7 @@ var nightingalePlayer = (function() {
           }
         }
       }
-      
+
       // Check for target div
       if(s.$playerElem.length){
 
@@ -139,6 +141,8 @@ var nightingalePlayer = (function() {
       s.$muteToggleBtn.on('mouseover', onMuteToggleHover);
       // MUTE button on MOUSELEAVE
       s.$allControlsWrapper.on('mouseleave', onControlsBlur);
+      // FACEBOOK share button on CLICK
+      s.$facebookShareBtn.on('click', onFacebookShareClick);
     }
 
     /*******************************************************************************
@@ -269,6 +273,14 @@ var nightingalePlayer = (function() {
       });
 
       console.log('nightingalePlayer event: expanding control click');
+    }
+
+    // On FACEBOOK button CLICK
+    function onFacebookShareClick(){
+      FB.ui({
+        method: 'share',
+        href: 'https://developers.facebook.com/docs/',
+      }, function(response){});
     }
 
     // On SEEK slider MOUSE DOWN
