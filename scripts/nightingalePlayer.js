@@ -68,7 +68,6 @@ var nightingalePlayer = (function() {
           this.$replayVideoBtn = this.$playerEndframe.find('button');
           this.$controlsList = this.$controlsContainer.find('ul');
           this.$volSlider = this.$volContainer.find('input');
-          this.$isPlayerDeferred = this.$playerElem.data('defer');
 
           delete this.initSettingsChildren;
           return this;
@@ -302,7 +301,7 @@ var nightingalePlayer = (function() {
     }
 
     // On CONTROL resolution quality CLICK
-    function onQualitySelect(event){
+    function onQualitySelect(){
       // Store previous quality state for reference during update of color values onPlaybackQualityChange()
       previousQualityState = ytp.getPlaybackQuality();
     }
