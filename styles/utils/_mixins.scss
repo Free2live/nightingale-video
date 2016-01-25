@@ -2,3 +2,7 @@
 // This file contains all application-wide Sass mixins.
 // -----------------------------------------------------------------------------
 
+@mixin transform--flip {
+  transform: rotateY(360deg);
+  transition: transform .5s;
+}

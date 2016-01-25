@@ -35,9 +35,13 @@
             width: $overlay__controls__circle--left__button-height;
             display: inline-block;
             margin: 0 15px;
+            perspective: inherit;
             img {
               height: $overlay__controls__circle--left__button-height;
               width: $overlay__controls__circle--left__button-height;
+            }
+            &:hover img {
+              @include transform--flip;
             }
           }
         }
