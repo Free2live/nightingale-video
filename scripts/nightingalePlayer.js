@@ -35,7 +35,8 @@ var nightingalePlayer = (function() {
         $playPauseBtn: $('#controls__standard--play-pause'),
         $muteToggleBtn: $('#controls__standard--toggle-mute'),
         $fsToggleBtn: $('#controls__standard--fs'),
-        $facebookShareBtn: $('#facebook-share'),
+        $facebookShareBtn: $('.facebook-share'),
+        $twitterShareBtn: $('.twitter-share'),
         $playerSeekSlider: $('#seekslider'),
         $playedBar: $('#seekslider__thumb-trail'),
         thumbDragging: false,
@@ -44,11 +45,9 @@ var nightingalePlayer = (function() {
           primary: '#ffffff',
           secondary: '#f44c02'
         },
-
         //Overridable default settings
         defaults: {
-          videoKey: 'Mnf15KwPV-Q',
-          testSetting: true
+          videoKey: 'Mnf15KwPV-Q'
         },
         // YouTube Api params
         playerWidth: '100%',
@@ -143,6 +142,8 @@ var nightingalePlayer = (function() {
       s.$allControlsWrapper.on('mouseleave', onControlsBlur);
       // FACEBOOK share button on CLICK
       s.$facebookShareBtn.on('click', onFacebookShareClick);
+      // TWITTER share button on CLICK
+      s.$twitterShareBtn.on('click', onTwitterShareClick);
     }
 
     /*******************************************************************************
@@ -277,10 +278,11 @@ var nightingalePlayer = (function() {
 
     // On FACEBOOK button CLICK
     function onFacebookShareClick(){
-      FB.ui({
-        method: 'share',
-        href: 'https://developers.facebook.com/docs/',
-      }, function(response){});
+      // Facebook sharing functionality
+    }
+
+    function onTwitterShareClick(){
+      // Twitter sharing functionality
     }
 
     // On SEEK slider MOUSE DOWN

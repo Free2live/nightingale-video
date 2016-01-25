@@ -25,6 +25,7 @@
       #endframe-overlay__circle--left {
         position: relative;
         float: left;
+        // animation: spin-c 24s infinite linear;
         #endframe-overlay__circle--left__buttons {
           position: absolute;
           bottom: 28%;
@@ -44,6 +45,7 @@
       }
       #endframe-overlay__circle--right {
         float: right;
+        // animation: spin-cc 24s infinite linear;
       }
       #endframe-overlay__btn-replay {
         margin: 0;
@@ -63,7 +65,7 @@
         &:hover {
           cursor: pointer;
           // uncomment for transition example - not centered or something tho
-          // transform: rotate(-360deg);
+          transform: rotate(-90deg);
         }
         &:focus {
           outline-style: none;
@@ -72,6 +74,3 @@
     }
   }
 }
-
-
-
