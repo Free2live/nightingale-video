@@ -23,9 +23,27 @@
     <body>
         <!-- Endframe layer -->
         <div id="endframe-overlay">
-          <div id="endframe-overlay__circle--left" class="endframe-overlay__circle"></div>
-          <div id="endframe-overlay__circle--right" class="endframe-overlay__circle"></div>
-          <button>Replay</button>
+          <div id="endframe-overlay__controls">
+            <div id="endframe-overlay__controls__inner-vert">
+              <div id="endframe-overlay__controls__inner-horiz">
+                <div id="endframe-overlay__circle--left" class="endframe-overlay__circle hidden-xs hidden-sm">
+                  <img src="images/icons/EndFrameVectors-01.svg" alt="">
+                    <div id="endframe-overlay__circle--left__buttons">
+                      <a href="https://www.facebook.com/libratone/" target="_blank"><div class="endframe-overlay__circle--left__buttons--btn fb"><img src="images/icons/social--facebook.svg" alt=""></div></a>
+                      <a href="https://twitter.com/libratone" target="_blank"><div class="endframe-overlay__circle--left__buttons--btn twit"><img src="images/icons/social--twitter.svg" alt=""></div></a>
+                    </div>
+                    
+                </div>
+                <a href="https://www.libratone.com/uk/products/libratone-zipp">
+                  <div id="endframe-overlay__circle--right" class="endframe-overlay__circle hidden-xs hidden-sm">
+                    <img src="images/icons/EndFrameVectors-02.svg" alt="">
+                  </div>
+                </a>
+                <button id="endframe-overlay__btn-replay">
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         <!-- Top layer -->
         <div class="overlays" id="overlay__top">
