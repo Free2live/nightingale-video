@@ -1,29 +1,20 @@
-
-// Set YT Deferred
-var YTdeferred = $.Deferred();
+PointerEventsPolyfill.initialize({});
+// Set player YT Deferred
+var nightingaleYTDeferred = $.Deferred();
 window.onYouTubeIframeAPIReady = function() {
-	YTdeferred.resolve(window.YT);
+  nightingaleYTDeferred.resolve(window.YT);
 };
+
+// YouTube API ajax call
+$.getScript( "https://www.youtube.com/player_api")
+  .done(function(script, textStatus) {
+});
 
 // nightingalePlayer constructor
 var nightingalePlayer = (function() {
-
-  // YouTube API ajax call
-  $.getScript( "https://www.youtube.com/player_api")
-    .done(function(script, textStatus) {
-    }).fail(function( jqxhr, settings, exception ) {
-    console.error('nightingalePlayer error: failed to load YouTube player api');
-  });
-
-  // YT Deferred callback
-  YTdeferred.done(function(YT) {
-    if(window.innerWidth > 760){
-      init();
-    }
-  });
-
   // Player vars
   var $d = $(document),
+      isWebKit = 'WebkitAppearance' in document.documentElement.style,
       updateTimer,
       totalDuration,
       previousQualityState,
@@ -52,10 +43,14 @@ var nightingalePlayer = (function() {
           primary: '#ffffff',
           secondary: '#f44c02'
         },
+        //Overridable default settings
+        defaults: {
+          videoKey: 'Mnf15KwPV-Q',
+          testSetting: true
+        },
         // YouTube Api params
         playerWidth: '100%',
         playerHeight: '100%',
-        videoKey: 'Mnf15KwPV-Q',
         autoPlay: 1,
         enableYouTubeApi: 1,
         enableControls: 0,
@@ -74,12 +69,24 @@ var nightingalePlayer = (function() {
         }
     };
 
-    function init(){
+    function init(options){
 
-      // Initialise player settings (use s for shorthand and set up siblings)
+      if(window.innerWidth > 760){
+
+      }
+
       s = settings;
       s.initSettingsChildren();
 
+      // If set, apply override options to settings
+      if(options){
+        for(var prop in options){
+          if(options.hasOwnProperty(prop)){
+              s.defaults[prop] = options[prop];
+          }
+        }
+      }
+      
       // Check for target div
       if(s.$playerElem.length){
 
@@ -87,7 +94,7 @@ var nightingalePlayer = (function() {
         ytp = new YT.Player(s.$playerElem.attr('id'), {
             width: s.playerWidth,
             height: s.playerHeight,
-            videoId: s.videoKey,
+            videoId: s.defaults.videoKey,
             playerVars: {
             autoplay: s.autoPlay,
             enablejsapi: s.enableYouTubeApi,
@@ -146,9 +153,6 @@ var nightingalePlayer = (function() {
 
       // Set YouTube player to default quality state for appropriate playback quality
       event.target.setPlaybackQuality('default');
-
-      // Mute the player while in dev so we do not go insane. If you see this in production, whoopseeeeeeeeeee.
-      // ytp.mute();
 
       // Fade the player up
       s.$playerWrapper.fadeIn(3000);
@@ -473,5 +477,9 @@ var nightingalePlayer = (function() {
           }
       }
     }
+
+    return {
+      init: init
+    };
 
 })($);
