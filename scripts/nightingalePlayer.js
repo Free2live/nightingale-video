@@ -37,8 +37,8 @@ var nightingalePlayer = (function() {
         $fsToggleBtn: $('#controls__standard--fs'),
         $facebookShareBtn: $('.facebook-share'),
         $twitterShareBtn: $('.twitter-share'),
-        $playerSeekSlider: $('#seekslider'),
-        $playedBar: $('#seekslider__thumb-trail'),
+        $playerSeekSlider: $('.seekslider'),
+        $playedBar: $('.seekslider__played'),
         thumbDragging: false,
         $volContainer: $('.volume'),
         colorTheme:{
@@ -125,7 +125,7 @@ var nightingalePlayer = (function() {
       // SEEK slider on MOUSE DOWN / UP / CHANGE
       s.$playerSeekSlider.on('mousedown', onSeekMouseDown)
       .on('mouseup', onSeekMouseUp)
-      .on('change', onPlayerSeekSlider);
+      .on('mousemove', onSeekMouseMove);
       // STANDARD player control on CLICK
       s.$standardPlayerControls.on('click', onStandardPlayerControlsClick);
       // EXPANDING player control on CLICK
@@ -155,6 +155,9 @@ var nightingalePlayer = (function() {
 
       // Bind custom events
       bindCustomEvents();
+
+      // Get current video duration
+      totalDuration = ytp.getDuration();
 
       // Set YouTube player to default quality state for appropriate playback quality
       event.target.setPlaybackQuality('default');
@@ -286,34 +289,38 @@ var nightingalePlayer = (function() {
     }
 
     // On SEEK slider MOUSE DOWN
-    function onSeekMouseDown() {
+    function onSeekMouseDown(e) {
       // pause video and listen for input events (value changes) from dragging
       ytp.pauseVideo();
-      $(this).on('input', onSeekMouseDrag); // ie8 doesn't support this, SHOCKER http://caniuse.com/#feat=input-event
       s.thumbDragging = true;
-      clearInterval(updateTimer);
+      updatePlayedBar(e.pageX);
     }
 
     // On SEEK slider MOUSE UP
-    function onSeekMouseUp() {
-      // resume playing video
-      ytp.playVideo();
-      s.thumbDragging = false;
+    function onSeekMouseUp(e) {
+      if(s.thumbDragging){
+
+        s.thumbDragging = false;
+        updatePlayedBar(e.pageX);
+        ytp.playVideo();
+      }
     }
 
-    // On SEEK slider MOUSE DRAG
-    function onSeekMouseDrag() {
-      // update played bar width
-      updatePlayedBar($(this).val());
+    // On SEEK mouse MOVE
+    function onSeekMouseMove(e){
+      if(s.thumbDragging) {
+        clearTimeout(updateTimer);
+        updatePlayedBar(e.pageX);
+      }
     }
 
     // On REPLAY button mouse CLICK
     function onReplayBtnClick(){
-      s.$playerEndframe.fadeOut({duration : 800, complete: onPosterFadeOutComplete});
+      s.$playerEndframe.fadeOut({duration : 800, complete: onEndframeFadeOutComplete});
     }
 
     // On POSTER fade out COMPLETE
-    function onPosterFadeOutComplete(){
+    function onEndframeFadeOutComplete(){
       s.$playerWrapper.fadeIn(3000);
       ytp.playVideo();
     }
@@ -322,13 +329,6 @@ var nightingalePlayer = (function() {
     function onQualitySelect(){
       // Store previous quality state for reference during update of color values onPlaybackQualityChange()
       previousQualityState = ytp.getPlaybackQuality();
-    }
-
-    // On SEEK slider CHANGE
-    function onPlayerSeekSlider(){
-      clearTimeout(updateTimer);
-      var seekValue = ytp.getDuration() * (s.$playerSeekSlider.val() / 100);
-      ytp.seekTo(seekValue);
     }
 
     // On VOLUME container CLICK
@@ -365,19 +365,24 @@ var nightingalePlayer = (function() {
       });
     }
 
+    /*******************************************************************************
+    * player STATES
+    ******************************************************************************/
+
     function onPlayerStatePlaying(){
 
-      // Get current vid duration and set up interval timer to move silder thumb along the track
-      totalDuration = ytp.getDuration();
+      // Set up interval timer to move silder thumb along the track
       updateTimer = setInterval(function() {
 
-        var currentTime = ytp.getCurrentTime(),
-        thumbValue = currentTime * (100 / totalDuration);
+        var currentTime = ytp.getCurrentTime();
+        //thumbValue = currentTime * (100 / totalDuration);
 
-        s.$playerSeekSlider.val(thumbValue);
+        // s.$playerSeekSlider.val(thumbValue);
+        var percentage = 100 * currentTime / totalDuration;
+        s.$playedBar.css('width', percentage+'%');
 
         // scrubber colored trail for played % on track
-        updatePlayedBar(thumbValue);
+        //updatePlayedBar(thumbValue);
 
       }, 400);
 
@@ -463,9 +468,25 @@ var nightingalePlayer = (function() {
     }
 
     // Update played bar (coloured bar behind the thumb slider) on updateTimer tick & seek bar change event
-    function updatePlayedBar(value) {
-      var playerBarPerc = (Math.round(value * 10) / 10).toFixed(1) + '%';
-      s.$playedBar.width(playerBarPerc);
+    function updatePlayedBar(x) {
+
+      var position = x - s.$playerSeekSlider.offset().left; // Click position
+      var percentage = 100 * position / s.$playerSeekSlider.width();
+
+      //Check within range
+      if(percentage > 100) {
+          percentage = 100;
+      }
+      if(percentage < 0) {
+          percentage = 0;
+      }
+
+      // Update played bar
+      s.$playedBar.css('width', percentage+'%');
+
+      // Seek to new current position
+      var seekValue = totalDuration * percentage / 100;
+      ytp.seekTo(seekValue);
     }
 
     // Fullscreen handler
