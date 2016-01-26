@@ -45,7 +45,7 @@ var nightingalePlayer = (function() {
           primary: '#ffffff',
           secondary: '#f44c02'
         },
-        //Overridable default settings
+        // Overridable default settings
         defaults: {
           videoKey: 'Mnf15KwPV-Q'
         },
@@ -473,7 +473,7 @@ var nightingalePlayer = (function() {
       var position = x - s.$playerSeekSlider.offset().left; // Click position
       var percentage = 100 * position / s.$playerSeekSlider.width();
 
-      //Check within range
+      // Check within range
       if(percentage > 100) {
           percentage = 100;
       }
