@@ -19,19 +19,32 @@
         z-index: 4;
       }
       .endframe-overlay__circle {
+        text-align: center;
+        position: relative;
         height: $overlay__controls__circle-diameter;
         width: $overlay__controls__circle-diameter;
-      }
-      #endframe-overlay__circle--left {
-        position: relative;
-        float: left;
-        // animation: spin-c 24s infinite linear;
-        #endframe-overlay__circle--left__buttons {
+        animation: opacity 1s ease-in;
+        svg {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+        .svg-text {
+          left: 50%;
+          transform: translateX(-50%);
+          top: 35%;
+          height: 150px;
+        }
+        .svg-lines {
+          left: 5%;
+          top: 5%;
+        }
+        .endframe-overlay__circle__buttons {
           position: absolute;
           bottom: 28%;
           width: $overlay__controls__circle-diameter;
           left: 0;
-          .endframe-overlay__circle--left__buttons--btn {
+          .endframe-overlay__circle__buttons--btn {
             height: $overlay__controls__circle--left__button-height;
             width: $overlay__controls__circle--left__button-height;
             display: inline-block;
@@ -48,9 +61,34 @@
           }
         }
       }
+      #endframe-overlay__circle--left {
+        float: left;
+        .svg-outer {
+          animation: spin-c 50s linear infinite;
+        }
+        .svg-lines {
+          animation: spin-cc 20s linear infinite;
+        }
+      }
       #endframe-overlay__circle--right {
         float: right;
-        // animation: spin-cc 24s infinite linear;
+        .svg-outer {
+          animation: spin-cc 50s linear infinite;
+        }
+        .svg-lines {
+          animation: spin-c 20s linear infinite;
+        }
+        // make the zipp icon a bit bigger
+        .endframe-overlay__circle__buttons {
+          .endframe-overlay__circle__buttons--btn {
+            height: 40px;
+            width: 40px;
+            img {
+              height: 40px;
+              width: 40px;
+            }
+          }
+        }
       }
       #endframe-overlay__btn-replay {
         margin: 0;
@@ -60,6 +98,7 @@
         margin-top: ($overlay__controls__circle-diameter / 2.5);
         border: none;
         perspective: inherit;
+        transition: transform .5s;
         background: {
           color: transparent;
           image: url('../images/icons/replay-360nostroke.svg');
@@ -68,8 +107,8 @@
         }
         &:hover {
           cursor: pointer;
-          transform: rotate(-360deg);
-          transition: transform .5s;
+          transform: rotate(-90deg);
+          
         }
         &:focus {
           outline-style: none;

@@ -1,9 +1,14 @@
-@keyframes spin-c{
+@keyframes spin-c {
 	0%  {transform: rotate(0deg);}
 	100%{transform: rotate(360deg);}
 }
 
-@keyframes spin-cc{
+@keyframes spin-cc {
 	0%  {transform: rotate(0deg);}
 	100%{transform: rotate(-360deg);}
+}
+
+@keyframes opacity {
+  0% { opacity: 0; }
+  50%, 100% { opacity: 1; }
 }
