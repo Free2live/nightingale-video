@@ -5,11 +5,12 @@ a#libra-link {
 	font-size: 18.5px;
   perspective: inherit;
   &:hover span#libra-link__z-icon {
-    @include transform--flip;
+    transform: rotateY(360deg);
   }
 }
 
 span#libra-link__z-icon {
+  transition: transform .5s;
 	position: relative;
 	top: 7px;
 	display: inline-block;

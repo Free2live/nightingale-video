@@ -5,6 +5,7 @@ div.controls--social {
   perspective: inherit;
   .controls__standard--share-twitter, .controls__standard--share-facebook {
     .flip {
+      transition: transform .5s;
       height: 100%;
       width: 100%;
       background: {
@@ -14,7 +15,7 @@ div.controls--social {
       }
     }
     &:hover .flip {
-      @include transform--flip;
+      transform: rotateY(360deg);
     }
   }
 }

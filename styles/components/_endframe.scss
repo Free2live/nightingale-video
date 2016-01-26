@@ -38,11 +38,12 @@
             margin: 0 15px;
             perspective: inherit;
             img {
+              transition: transform .5s;
               height: $overlay__controls__circle--left__button-height;
               width: $overlay__controls__circle--left__button-height;
             }
             &:hover img {
-              @include transform--flip;
+              transform: rotateY(360deg);
             }
           }
         }
