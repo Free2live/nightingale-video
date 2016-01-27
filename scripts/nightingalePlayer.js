@@ -37,6 +37,7 @@ var nightingalePlayer = (function() {
         $playedBar: $('.seekslider__played'),
         thumbDragging: false,
         $volContainer: $('.volume'),
+        // Define player colour theme;
         colorTheme:{
           primary: '#ffffff',
           secondary: '#f44c02'
@@ -149,7 +150,6 @@ var nightingalePlayer = (function() {
     // YouTube player ready
     function onPlayerReady(event){
 
-      // Get player volume
       var _volume = ytp.getVolume();
 
       // Bind custom events
