@@ -1,6 +1,6 @@
 a#libra-link {
 	position: absolute;
-	right: 40px;
+	right: 39px;
 	top: -4px;
 	font-size: 18.5px;
   perspective: inherit;
@@ -9,16 +9,16 @@ a#libra-link {
   }
   img.libra-slogan {
     // line up the new png version w/ svg
-    margin-top: 16px;
+    margin-top: 19px;
   }
 }
 
 span#libra-link__z-icon {
   transition: transform .5s;
 	position: relative;
-	top: 7px;
+	top: 9px;
 	display: inline-block;
 	width: 17px;
-	height: 33px;
-	margin-left: 10px;
+	height: 20px;
+	margin-left: 24px;
 }
