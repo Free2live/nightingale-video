@@ -170,6 +170,9 @@ var nightingalePlayer = (function() {
 
     function onPlayerStateChange (event){
 
+      var _activeClass = 'active';
+
+      console.log('nightingalePlayer state: CHANGED');
       // Request available qualities and load into controls display
       // getAvailableQualityLevels is only available on playerStateChange (this function and not onPlayerReady), so it's wrapped in an undefined check to run once only
 
@@ -189,14 +192,24 @@ var nightingalePlayer = (function() {
       if (event.data == YT.PlayerState.PLAYING) {
         onPlayerStatePlaying();
         console.log('nightingalePlayer state: PLAYING');
+        // Toggle play / pause
+        s.$playPauseBtn.addClass(_activeClass);
       } else {
         // Stops the seek bar if not playing
         clearTimeout(updateTimer);
       }
 
+      if(event.data == YT.PlayerState.PAUSED){
+        // Toggle play / pause
+        s.$playPauseBtn.removeClass(_activeClass);
+        console.log('nightingalePlayer state: PAUSED');
+      }
+
       if(event.data == YT.PlayerState.ENDED){
         onPlayerStateEnded();
         console.log('nightingalePlayer state: ENDED');
+        // Toggle play / pause
+        s.$playPauseBtn.removeClass(_activeClass);
       }
 
       // Store reference to previous quality to update the UI
@@ -204,9 +217,6 @@ var nightingalePlayer = (function() {
 
       // Update quality display in UI
       updateQualityDisplay(previousQualityState, ytp.getPlaybackQuality());
-
-      // Toggle play / pause
-      s.$playPauseBtn.toggleClass('active');
     }
 
     function onPlaybackQualityChange(event){
