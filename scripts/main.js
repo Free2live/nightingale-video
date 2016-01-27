@@ -5,12 +5,12 @@
   // Player deferred callback on API Ready
   nightingaleYTDeferred.done(function(YT) {
 
-    nightingalePlayer.init({
-      videoKey: 'aQd41nbQM-U',
-      oldBrowsersKey: 'blpe_sGnnP4'
-    });
+    // nightingalePlayer.init({
+    //   videoKey: 'aQd41nbQM-U',
+    //   oldBrowsersKey: 'blpe_sGnnP4'
+    // });
 
-    // nightingalePlayer.init();
+    nightingalePlayer.init();
 
   });
 

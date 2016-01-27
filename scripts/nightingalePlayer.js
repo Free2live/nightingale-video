@@ -10,10 +10,15 @@ $.getScript( "https://www.youtube.com/player_api")
   .done(function(script, textStatus) {
 });
 
-/***************************************************
-browser sniffage
-***************************************************/
 
+/***************************************************
+  Browser sniffage
+
+  Since we cannot target browsers for any '360 video enabled' feature,
+  and a youtube 360 api is non existent at the moment, user agent sniffing is only answer
+  in this case. Below we are looking for Chrome, FF or Opera (360 supported).
+
+***************************************************/
 function browserCanLoadVideo() {
   // chrome / opera
   var isChromium = !!window.chrome;
@@ -25,21 +30,15 @@ function browserCanLoadVideo() {
   var isSafari = /constructor/i.test(window.HTMLElement);
   // ie >= 10
   var isIE = window.navigator.msPointerEnabled;
-  
+
   if ((isChromium) || (isFF) || (isOpera)) {
-    console.log('using chrome, FF or opera, can play if up to date');
     return true;
   }
   if (isSafari || isIE) {
-    console.log('using safari or ie >=10, no can do friendo');
-    // <!--[if lte IE 9]> for other IE versions to save js? <![endif]-->
     return false;
   }
-  console.log('dunno what ur using m8, no vid 4 u');
   return false;
 }
-
-console.log(browserCanLoadVideo());
 
 // nightingalePlayer constructor
 var nightingalePlayer = (function() {
@@ -180,7 +179,7 @@ var nightingalePlayer = (function() {
 
     // YouTube player ready
     function onPlayerReady(event){
-      
+
       // Set current video duration
       totalDuration = ytp.getDuration();
       // Get the current volume
