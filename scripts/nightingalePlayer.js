@@ -10,6 +10,37 @@ $.getScript( "https://www.youtube.com/player_api")
   .done(function(script, textStatus) {
 });
 
+/***************************************************
+browser sniffage
+***************************************************/
+
+function browserCanLoadVideo() {
+  // chrome / opera
+  var isChromium = !!window.chrome;
+  // ff *
+  var isFF = !!window.sidebar;
+  // opera *
+  var isOpera = !!window.opera || /opera|opr/i.test(navigator.userAgent);
+  // sfari *
+  var isSafari = /constructor/i.test(window.HTMLElement);
+  // ie >= 10
+  var isIE = window.navigator.msPointerEnabled;
+  
+  if ((isChromium) || (isFF) || (isOpera)) {
+    console.log('using chrome, FF or opera, can play if up to date');
+    return true;
+  }
+  if (isSafari || isIE) {
+    console.log('using safari or ie >=10, no can do friendo');
+    // <!--[if lte IE 9]> for other IE versions to save js? <![endif]-->
+    return false;
+  }
+  console.log('dunno what ur using m8, no vid 4 u');
+  return false;
+}
+
+console.log(browserCanLoadVideo());
+
 // nightingalePlayer constructor
 var nightingalePlayer = (function() {
   // Player vars
@@ -44,8 +75,8 @@ var nightingalePlayer = (function() {
         },
         // Overridable default settings
         defaults: {
-          videoKey: 'blpe_sGnnP4',
-          oldBrowsersVideoKey: 'blpe_sGnnP4'
+          videoKey: 'aQd41nbQM-U',
+          oldBrowsersKey: 'blpe_sGnnP4'
         },
         // YouTube Api params
         playerWidth: '100%',
@@ -93,7 +124,7 @@ var nightingalePlayer = (function() {
           ytp = new YT.Player(s.$playerElem.attr('id'), {
               width: s.playerWidth,
               height: s.playerHeight,
-              videoId: s.defaults.videoKey,
+              videoId: (browserCanLoadVideo()) ? s.defaults.videoKey : s.defaults.oldBrowsersKey,
               playerVars: {
               autoplay: s.autoPlay,
               enablejsapi: s.enableYouTubeApi,
@@ -149,7 +180,7 @@ var nightingalePlayer = (function() {
 
     // YouTube player ready
     function onPlayerReady(event){
-
+      
       // Set current video duration
       totalDuration = ytp.getDuration();
       // Get the current volume
