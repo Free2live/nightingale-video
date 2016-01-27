@@ -7,6 +7,10 @@ a#libra-link {
   &:hover span#libra-link__z-icon {
     transform: rotateY(360deg);
   }
+  img.libra-slogan {
+    // line up the new png version w/ svg
+    margin-top: 16px;
+  }
 }
 
 span#libra-link__z-icon {

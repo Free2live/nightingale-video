@@ -24,26 +24,52 @@
         height: $overlay__controls__circle-diameter;
         width: $overlay__controls__circle-diameter;
         animation: opacity 1s ease-in;
-        svg {
+        .endframe-overlay__circle__innerbox {
+          width: 100%;
+          height: 100%;
+          padding: 4%;
+          img {
+            position: inherit;
+            width: 100%;
+            height: 100%;
+          }
+        }
+        img {
           position: absolute;
           top: 0;
           left: 0;
         }
         .svg-text {
-          left: 50%;
-          transform: translateX(-50%);
-          top: 35%;
-          height: 150px;
+          width: 100%;
+          height: auto;
+          padding: 32% 25%;
+          margin: 0 auto;
+          display: block;
+          text-align: center;
         }
-        .svg-lines {
-          left: 5%;
-          top: 5%;
+        .svg-inner {
+          left: 17%;
+          top: 4%;
+          width: 65%;
+          height: auto;
         }
         .endframe-overlay__circle__buttons {
           position: absolute;
           bottom: 28%;
           width: $overlay__controls__circle-diameter;
           left: 0;
+          // white separating border
+          &:before {
+            content: "";
+            border-top: 2px solid #efefef;
+            width: 12%;
+            display: block;
+            margin: {
+              left: auto;
+              right: auto;
+              bottom: 25px;
+            }
+          }
           .endframe-overlay__circle__buttons--btn {
             height: $overlay__controls__circle--left__button-height;
             width: $overlay__controls__circle--left__button-height;
@@ -51,6 +77,7 @@
             margin: 0 15px;
             perspective: inherit;
             img {
+              position: inherit;
               transition: transform .5s;
               height: $overlay__controls__circle--left__button-height;
               width: $overlay__controls__circle--left__button-height;
@@ -66,7 +93,7 @@
         .svg-outer {
           animation: spin-c 50s linear infinite;
         }
-        .svg-lines {
+        .svg-inner {
           animation: spin-cc 20s linear infinite;
         }
       }
@@ -75,8 +102,12 @@
         .svg-outer {
           animation: spin-cc 50s linear infinite;
         }
-        .svg-lines {
+        .svg-inner {
           animation: spin-c 20s linear infinite;
+        }
+        // nudge the right text vector around a bit
+        .svg-text {
+          padding: 35% 13%;
         }
         // make the zipp icon a bit bigger
         .endframe-overlay__circle__buttons {

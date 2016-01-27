@@ -17,7 +17,7 @@
     right: 12px;
     top: 5px;
   }
-  svg {
+  svg, img {
     height: 100%;
     width: 100%;
     padding: 6px;
@@ -45,15 +45,9 @@
 }
 
 #controls__standard--play-pause {
-}
-
-#controls__standard--toggle-mute {
-}
-
-#controls__standard--fs {
-}
-
-#controls__standard--fs.active {
+  img.svg--default {
+    margin-left: 1px;
+  }
 }
 
 .controls__expanding {
