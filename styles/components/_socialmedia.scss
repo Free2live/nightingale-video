@@ -1,31 +1,25 @@
 div.controls--social {
+  text-align: center;
   position: relative;
   right: 10px;
   text-align: right;
   perspective: inherit;
-  .controls__standard--share-twitter, .controls__standard--share-facebook {
-    .flip {
+  .controls__standard--share-twitter, .controls__standard--share-facebook, .controls__standard--apple-music {
+    img {
       transition: transform .5s;
-      height: 100%;
-      width: 100%;
-      background: {
-        size: 16px 16px;
-        repeat: no-repeat;
-        position: center center;
-      }
+/*      height: 16px;
+      width: 16px;
+      margin: 3px 5px 0 0;*/
     }
-    &:hover .flip {
+    &:hover img {
       transform: rotateY(360deg);
     }
   }
-}
-
-div.controls__standard--share-facebook .flip {
-  background-image: url('../images/icons/social--facebook.svg');
-}
-
-div.controls__standard--share-twitter .flip {
-  background-image: url('../images/icons/social--twitter.svg');
+  #appl {
+    width: 70px;
+    display: inline-block;
+    margin: 7px 15px 5px 0;
+  }
 }
 
 .icon {

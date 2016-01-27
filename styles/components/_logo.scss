@@ -1,21 +1,21 @@
  #logo {
    width: 320px;
-   margin-top: 10px;
+   margin-top: 4px; // overlay__top 14px of padding, = 18px
    margin-left: auto;
    margin-right: auto;
    span {
-     height: auto;
+/*     height: auto;
      display: inline-block;
      margin: 0;
      padding: 0;
      float: left;
      overflow: hidden;
      vertical-align: bottom;
-     position: relative;
+     position: relative;*/
    }
    span.sigma {
-     top: 1px;
-     width: 40%;
+     //top: 1px;
+     width: 50%;
      //border: 1px solid red;
    }
    span.x {
@@ -24,8 +24,8 @@
      //border: 1px solid white;
    }
    span.libratone {
-     width: 40%;
-     top: -5px;
+     width: 50%;
+     //top: -5px;
    }
    svg {
      transition: all 0.15s ease-in;
