@@ -44,7 +44,8 @@ var nightingalePlayer = (function() {
         },
         // Overridable default settings
         defaults: {
-          videoKey: 'Mnf15KwPV-Q'
+          videoKey: 'blpe_sGnnP4',
+          oldBrowsersVideoKey: 'blpe_sGnnP4'
         },
         // YouTube Api params
         playerWidth: '100%',
@@ -350,6 +351,9 @@ var nightingalePlayer = (function() {
       // show the end frame, hide player behind it.
       s.$playerEndframe.show();
       s.$playerWrapper.hide();
+
+      // Set played bar to end position
+      s.$playedBar.css('width', '100%');
     }
 
     /*******************************************************************************
