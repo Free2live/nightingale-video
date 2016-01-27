@@ -10,6 +10,8 @@ $.getScript( "https://www.youtube.com/player_api")
   .done(function(script, textStatus) {
 });
 
+var isWebKit = !!window.webkitURL;
+
 // nightingalePlayer constructor
 var nightingalePlayer = (function() {
   // Player vars
@@ -149,6 +151,8 @@ var nightingalePlayer = (function() {
 
     // YouTube player ready
     function onPlayerReady(event){
+      
+      console.log('webkit: ' + isWebKit);
 
       var _volume = ytp.getVolume();
 
