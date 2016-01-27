@@ -125,25 +125,25 @@
 }
 
 // volume slider
-div.volume {
+.volume {
 
   display: none;
   width: 0px;
   margin: {
-    right: 14px;
-    top: 14px;
+    right: 22px;
+    top: 9px;
   }
 
   .volume__track{
 
     width: 100%;
-    height: 15px;
+    height: 20px;
     cursor: pointer;
 
     .volume__track__bar{
       position: relative;
-      left: 0;
-      top: 7px;
+      left: 8px;
+      top: 10px;
       height: 2px;
       width: 100%;
       background-color: #ffffff;
@@ -152,7 +152,7 @@ div.volume {
     .volume__track__slider{
 
       position: relative;
-      top: 5px;
+      top: 8px;
       width: 0%;
       height: 2px;
       background-color: $accent;

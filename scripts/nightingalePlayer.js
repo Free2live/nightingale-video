@@ -10,15 +10,13 @@ $.getScript( "https://www.youtube.com/player_api")
   .done(function(script, textStatus) {
 });
 
-var isWebKit = !!window.webkitURL;
-
 // nightingalePlayer constructor
 var nightingalePlayer = (function() {
   // Player vars
   var $d = $(document),
-      isWebKit = 'WebkitAppearance' in document.documentElement.style,
       updateTimer,
       totalDuration,
+      playerVolumeLevel,
       ytp,
       s,
       // Player settings
@@ -64,6 +62,7 @@ var nightingalePlayer = (function() {
           this.$controlsList = this.$controlsContainer.find('ul');
           this.$volTrack = this.$volContainer.find('.volume__track');
           this.$volSlider = this.$volContainer.find('.volume__track__slider');
+          this.$volSliderThumb = this.$volContainer.find('.volume__track__thumb');
 
           delete this.initSettingsChildren;
           return this;
@@ -74,47 +73,45 @@ var nightingalePlayer = (function() {
 
       if(window.innerWidth > 760){
 
-      }
+        s = settings;
+        s.initSettingsChildren();
 
-      s = settings;
-      s.initSettingsChildren();
-
-      // If set, apply override options to settings
-      if(options){
-        for(var prop in options){
-          if(options.hasOwnProperty(prop)){
-              s.defaults[prop] = options[prop];
+        // If set, apply override options to settings
+        if(options){
+          for(var prop in options){
+            if(options.hasOwnProperty(prop)){
+                s.defaults[prop] = options[prop];
+            }
           }
         }
+
+        // Check for target div
+        if(s.$playerElem.length){
+
+          // New up YouTube player with player settings
+          ytp = new YT.Player(s.$playerElem.attr('id'), {
+              width: s.playerWidth,
+              height: s.playerHeight,
+              videoId: s.defaults.videoKey,
+              playerVars: {
+              autoplay: s.autoPlay,
+              enablejsapi: s.enableYouTubeApi,
+              controls: s.enableControls,
+              rel: s.showRelatedContent,
+              showinfo: s.showPlayerInfo,
+              modestbranding: s.enableModestBranding
+            },
+            events: {
+              'onReady': onPlayerReady,
+              'onStateChange': onPlayerStateChange
+            }
+          });
+
+        }else{
+          // Throw an error if no target div found.
+          console.error('nightingalePlayer Error: Cannot initialise, no target div found. Please add a div with id "nightingalePlayer__player" to the page.');
+        }
       }
-
-      // Check for target div
-      if(s.$playerElem.length){
-
-        // New up YouTube player with player settings
-        ytp = new YT.Player(s.$playerElem.attr('id'), {
-            width: s.playerWidth,
-            height: s.playerHeight,
-            videoId: s.defaults.videoKey,
-            playerVars: {
-            autoplay: s.autoPlay,
-            enablejsapi: s.enableYouTubeApi,
-            controls: s.enableControls,
-            rel: s.showRelatedContent,
-            showinfo: s.showPlayerInfo,
-            modestbranding: s.enableModestBranding
-          },
-          events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-          }
-        });
-
-      }else{
-        // Throw an error if no target div found.
-        console.error('nightingalePlayer Error: Cannot initialise, no target div found. Please add a div with id "nightingalePlayer__player" to the page.');
-      }
-
     }
 
     // Bind custom player events
@@ -151,63 +148,47 @@ var nightingalePlayer = (function() {
 
     // YouTube player ready
     function onPlayerReady(event){
-      
-      console.log('webkit: ' + isWebKit);
 
-      var _volume = ytp.getVolume();
-
-      // Bind custom events
-      bindCustomEvents();
-
-      // Get current video duration
+      // Set current video duration
       totalDuration = ytp.getDuration();
-
+      // Get the current volume
+      var _currentVolume = ytp.getVolume();
       // Set up volume slider
-      s.$volSlider.css('width', _volume+'%');
-
+      s.$volSlider.css('width', _currentVolume+'%');
+      // Update the current volume level in the volume slider
+      playerVolumeLevel = s.$volSlider.css('width');
       // Set YouTube player to default quality state for appropriate playback quality
       event.target.setPlaybackQuality('default');
-
+      // Bind custom events
+      bindCustomEvents();
       // Fade the player up
       s.$playerWrapper.fadeIn(3000);
-
-      console.log('nightingalePlayer event: Ready');
     }
 
     function onPlayerStateChange (event){
 
       var _activeClass = 'active';
 
-      console.log('nightingalePlayer state: CHANGED');
-
       // YouTube Player States
-      if(event.data == YT.PlayerState.BUFFERING){
-        console.log('nightingalePlayer state: BUFFERING');
-      }
-
       if (event.data == YT.PlayerState.PLAYING) {
+
         onPlayerStatePlaying();
-        console.log('nightingalePlayer state: PLAYING');
         // Toggle play / pause
         s.$playPauseBtn.addClass(_activeClass);
+
       } else {
         // Stops the seek bar if not playing
         clearTimeout(updateTimer);
       }
-
       if(event.data == YT.PlayerState.PAUSED){
         // Toggle play / pause
         s.$playPauseBtn.removeClass(_activeClass);
-        console.log('nightingalePlayer state: PAUSED');
       }
-
       if(event.data == YT.PlayerState.ENDED){
         onPlayerStateEnded();
-        console.log('nightingalePlayer state: ENDED');
         // Toggle play / pause
         s.$playPauseBtn.removeClass(_activeClass);
       }
-
     }
 
     /*******************************************************************************
@@ -224,8 +205,6 @@ var nightingalePlayer = (function() {
 
       var _id = $(this).attr('id');
 
-      console.log('nightingalePlayer event: Standard control click (' + _id + ')');
-
       switch(_id){
 
         case 'controls__standard--play-pause':
@@ -239,11 +218,10 @@ var nightingalePlayer = (function() {
         case 'controls__standard--toggle-mute':
           if (!ytp.isMuted()) {
               ytp.mute();
-              s.$volSlider.val(0);
+              s.$volSlider.css('width', '0%');
           } else {
               ytp.unMute();
-              s.$volSlider.val(50);
-              ytp.setVolume(50);
+              s.$volSlider.css('width', playerVolumeLevel);
           }
           $(this).toggleClass('active');
         break;
@@ -274,7 +252,6 @@ var nightingalePlayer = (function() {
     // On SEEK slider MOUSE UP
     function onSeekMouseUp(e) {
       if(s.thumbDragging){
-
         s.thumbDragging = false;
         updatePlayedBar(e.pageX);
         ytp.playVideo();
@@ -328,17 +305,18 @@ var nightingalePlayer = (function() {
 
     function onMuteToggleHover() {
       s.$volContainer.addClass('active');
-      s.$volContainer.animate({
+      s.$volContainer.stop().animate({
         width: '120px'
-      }, 150, 'easeInOutQuad');
+      }, 150, 'easeInOutQuad')
+      .css('overflow', 'visible');
     }
 
     function onControlsBlur() {
-      s.$volContainer.animate({
+      s.$volContainer.stop().animate({
         width: '0'
       }, 200, 'easeInOutQuad', function() {
         s.$volContainer.removeClass('active');
-      });
+      }).css('overflow', 'visible');
 
       if(s.thumbDragging){
         s.thumbDragging = false;
@@ -354,9 +332,9 @@ var nightingalePlayer = (function() {
       // Set up interval timer to move silder thumb along the track
       updateTimer = setInterval(function() {
 
-        var currentTime = ytp.getCurrentTime();
+        var currentTime = ytp.getCurrentTime(),
+            percentage = 100 * currentTime / totalDuration;
 
-        var percentage = 100 * currentTime / totalDuration;
         s.$playedBar.css('width', percentage+'%');
 
       }, 400);
@@ -378,20 +356,12 @@ var nightingalePlayer = (function() {
     * nightingalePlayer Functions
     ******************************************************************************/
 
-    // Update played bar (coloured bar behind the thumb slider) on updateTimer tick & seek bar change event
-    function updatePlayedBar(x) {
+    // Update played bar width and seek to on mouse move
+    function updatePlayedBar(pageX) {
 
-      var _position = x - s.$playerSeekSlider.offset().left, // Click position
-          _percentage = 100 * _position / s.$playerSeekSlider.width(),
-          _seekValue = totalDuration * _percentage / 100;
-
-      // Check within range
-      if(_percentage > 100) {
-          _percentage = 100;
-      }
-      if(_percentage < 0) {
-          _percentage = 0;
-      }
+      // Calulate new slider percentage and volume level
+      var _percentage = calculateSliderPercentage(pageX, s.$playerSeekSlider),
+      _seekValue = totalDuration * _percentage / 100;
 
       // Update played bar
       s.$playedBar.css('width', _percentage+'%');
@@ -400,11 +370,33 @@ var nightingalePlayer = (function() {
       ytp.seekTo(_seekValue);
     }
 
-    function updateVolumeBar(x){
+    // Update volume bar on mouse move
+    function updateVolumeBar(pageX){
 
-      var _position = x - s.$volTrack.offset().left,
-          _percentage = 100 * _position / s.$volTrack.width(),
-          _volume = Math.round(_percentage);
+      // Calulate new slider percentage and volume level
+      var _percentage = calculateSliderPercentage(pageX, s.$volTrack),
+          _volumeValue = Math.round(_percentage);
+
+      if (_volumeValue !== 0) {
+        ytp.unMute();
+        ytp.setVolume(_volumeValue);
+        s.$muteToggleBtn.addClass('active');
+      } else if (_volumeValue === 0) {
+        ytp.mute();
+        s.$muteToggleBtn.removeClass('active');
+      }
+
+      playerVolumeLevel = ytp.getVolume()+'%';
+      s.$volSlider.css('width', _percentage+'%');
+    }
+
+    // Calulate slider percentage
+    function calculateSliderPercentage(pageX, sliderTrack){
+
+      // Get the click position
+      var _position = pageX - sliderTrack.offset().left,
+          // Calulate the percentage
+          _percentage = 100 * _position / sliderTrack.width();
 
       // Check within range
       if(_percentage > 100) {
@@ -414,16 +406,7 @@ var nightingalePlayer = (function() {
           _percentage = 0;
       }
 
-      if (_volume !== 0) {
-        ytp.unMute();
-        ytp.setVolume(_volume);
-        s.$muteToggleBtn.addClass('active');
-      } else if (_volume === 0) {
-        ytp.mute();
-        s.$muteToggleBtn.removeClass('active');
-      }
-
-      s.$volSlider.css('width', _percentage+'%');
+      return _percentage;
     }
 
     // Fullscreen handler
