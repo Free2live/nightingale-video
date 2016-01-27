@@ -1,4 +1,5 @@
 #endframe-overlay__controls {
+  background-color: RGBA(41, 41, 41, 0.1); // text scrim
   display: table;
   position: absolute;
   width: 100%;
@@ -34,18 +35,31 @@
             height: 100%;
           }
         }
-        img {
+        img, .endframe-overlay__circle__text {
           position: absolute;
           top: 0;
           left: 0;
         }
-        .svg-text {
+        .endframe-overlay__circle__text {
           width: 100%;
           height: auto;
-          padding: 32% 25%;
+          padding: 33% 10%;
           margin: 0 auto;
           display: block;
           text-align: center;
+          & h2, p {
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            text-transform: uppercase;
+          }
+          h2 {
+            font-weight: bold;
+            letter-spacing: 12px;
+          }
+          p {
+            letter-spacing: 6px;
+          }
         }
         .svg-inner {
           left: 17%;
@@ -105,10 +119,6 @@
         .svg-inner {
           animation: spin-c 20s linear infinite;
         }
-        // nudge the right text vector around a bit
-        .svg-text {
-          padding: 35% 13%;
-        }
         // make the zipp icon a bit bigger
         .endframe-overlay__circle__buttons {
           .endframe-overlay__circle__buttons--btn {
@@ -132,7 +142,7 @@
         transition: transform .5s;
         background: {
           color: transparent;
-          image: url('../images/icons/replay-360nostroke.svg');
+          image: url('../images/icons/button--replay.svg');
           repeat: no-repeat;
           position: center center;
         }
