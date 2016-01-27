@@ -17,8 +17,6 @@ var nightingalePlayer = (function() {
       isWebKit = 'WebkitAppearance' in document.documentElement.style,
       updateTimer,
       totalDuration,
-      previousQualityState,
-      availableQuality,
       ytp,
       s,
       // Player settings
@@ -29,8 +27,6 @@ var nightingalePlayer = (function() {
         $playerEndframe: $('#endframe-overlay'),
         $allControlsWrapper: $('.controls'),
         $standardPlayerControls: $('.controls__standard'),
-        $expandingPlayerControls: $('.controls__expanding'),
-        $expandingPlayerControlIcon: $('.controls__expanding__icon'),
         $controlsContainer: $('#controls__expanding_centre'),
         $playPauseBtn: $('#controls__standard--play-pause'),
         $muteToggleBtn: $('#controls__standard--toggle-mute'),
@@ -63,7 +59,8 @@ var nightingalePlayer = (function() {
           // Settings that need sibling reference
           this.$replayVideoBtn = this.$playerEndframe.find('button');
           this.$controlsList = this.$controlsContainer.find('ul');
-          this.$volSlider = this.$volContainer.find('input');
+          this.$volTrack = this.$volContainer.find('.volume__track');
+          this.$volSlider = this.$volContainer.find('.volume__track__slider');
 
           delete this.initSettingsChildren;
           return this;
@@ -106,8 +103,7 @@ var nightingalePlayer = (function() {
           },
           events: {
             'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange,
-            'onPlaybackQualityChange': onPlaybackQualityChange
+            'onStateChange': onPlayerStateChange
           }
         });
 
@@ -128,14 +124,14 @@ var nightingalePlayer = (function() {
       .on('mousemove', onSeekMouseMove);
       // STANDARD player control on CLICK
       s.$standardPlayerControls.on('click', onStandardPlayerControlsClick);
-      // EXPANDING player control on CLICK
-      s.$expandingPlayerControlIcon.on('click', onExpandingPlayerControlsClick);
       // REPLAY video button on CLICK
       s.$replayVideoBtn.on('click', onReplayBtnClick);
       // VOLUME container on CLICK
       s.$volContainer.on('click', onVolumeContainerInteract);
       // VOLUME slider on INPUT CHANGE
-      s.$volSlider.on('input change', onVolumeSliderInteract);
+      s.$volTrack.on('mousedown', onVolumeSliderMouseDown)
+      .on('mousemove', onVolumeSliderMouseMove)
+      .on('mouseup', onVolumeSliderMouseUp);
       // MUTE button on MOUSEOVER
       s.$muteToggleBtn.on('mouseover', onMuteToggleHover);
       // MUTE button on MOUSELEAVE
@@ -173,19 +169,9 @@ var nightingalePlayer = (function() {
       var _activeClass = 'active';
 
       console.log('nightingalePlayer state: CHANGED');
-      // Request available qualities and load into controls display
-      // getAvailableQualityLevels is only available on playerStateChange (this function and not onPlayerReady), so it's wrapped in an undefined check to run once only
-
-      if(typeof availableQuality === 'undefined'){
-        // Get available qualities
-        availableQuality = ytp.getAvailableQualityLevels();
-        // Set available qualities
-        updateAvailableQualityUI(availableQuality);
-      }
 
       // YouTube Player States
       if(event.data == YT.PlayerState.BUFFERING){
-        onPlayerStateBuffering();
         console.log('nightingalePlayer state: BUFFERING');
       }
 
@@ -212,17 +198,6 @@ var nightingalePlayer = (function() {
         s.$playPauseBtn.removeClass(_activeClass);
       }
 
-      // Store reference to previous quality to update the UI
-      previousQualityState = ytp.getPlaybackQuality();
-
-      // Update quality display in UI
-      updateQualityDisplay(previousQualityState, ytp.getPlaybackQuality());
-    }
-
-    function onPlaybackQualityChange(event){
-      // Update HD player control to reflect quality change
-      updateQualityDisplay(previousQualityState, ytp.getPlaybackQuality());
-      console.log('nightingalePlayer event: Quality change');
     }
 
     /*******************************************************************************
@@ -267,26 +242,6 @@ var nightingalePlayer = (function() {
           requestFullScreen($(this).hasClass('active'));
         break;
       }
-    }
-
-    // On EXPANDING player control CLICK
-    function onExpandingPlayerControlsClick(){
-
-      var _activeElems = [s.$controlsContainer, s.$expandingPlayerControls];
-
-      if(!s.$controlsContainer.hasClass('active')){
-        s.$controlsContainer.css( "width", s.$controlsList.width() + 20).find('ul').delay(500).fadeIn(500);
-      }else{
-        s.$controlsList.fadeOut(100, function(){
-          s.$controlsContainer.css( "width", '0px');
-        });
-      }
-
-      $.each(_activeElems, function(index, value){
-        $(this).toggleClass('active');
-      });
-
-      console.log('nightingalePlayer event: expanding control click');
     }
 
     // On FACEBOOK button CLICK
@@ -335,28 +290,29 @@ var nightingalePlayer = (function() {
       ytp.playVideo();
     }
 
-    // On CONTROL resolution quality CLICK
-    function onQualitySelect(){
-      // Store previous quality state for reference during update of color values onPlaybackQualityChange()
-      previousQualityState = ytp.getPlaybackQuality();
-    }
-
     // On VOLUME container CLICK
     function onVolumeContainerInteract(e) {
       // Prevent accidental closes while dragging volume slider
       e.stopPropagation();
     }
     // get value of volume slider and translate into ytp volume
-    function onVolumeSliderInteract(e) {
-      e.stopPropagation();
-      var volume = parseInt($(this).val());
-      if (volume !== 0) {
-        ytp.unMute();
-        ytp.setVolume(volume);
-        s.$muteToggleBtn.addClass('active');
-      } else if (volume === 0) {
-        ytp.mute();
-        s.$muteToggleBtn.removeClass('active');
+    function onVolumeSliderMouseDown(e) {
+
+      s.thumbDragging = true;
+      updateVolumeBar(e.pageX);
+
+    }
+
+    function onVolumeSliderMouseMove(e){
+      if(s.thumbDragging) {
+        updateVolumeBar(e.pageX);
+      }
+    }
+
+    function onVolumeSliderMouseUp(e){
+      if(s.thumbDragging){
+        s.thumbDragging = false;
+        updateVolumeBar(e.pageX);
       }
     }
 
@@ -373,6 +329,10 @@ var nightingalePlayer = (function() {
       }, 200, 'easeInOutQuad', function() {
         s.$volContainer.removeClass('active');
       });
+
+      if(s.thumbDragging){
+        s.thumbDragging = false;
+      }
     }
 
     /*******************************************************************************
@@ -385,14 +345,9 @@ var nightingalePlayer = (function() {
       updateTimer = setInterval(function() {
 
         var currentTime = ytp.getCurrentTime();
-        //thumbValue = currentTime * (100 / totalDuration);
 
-        // s.$playerSeekSlider.val(thumbValue);
         var percentage = 100 * currentTime / totalDuration;
         s.$playedBar.css('width', percentage+'%');
-
-        // scrubber colored trail for played % on track
-        //updatePlayedBar(thumbValue);
 
       }, 400);
 
@@ -401,10 +356,6 @@ var nightingalePlayer = (function() {
         s.$playerEndframe.hide();
         s.$playerWrapper.show();
       }
-    }
-
-    function onPlayerStateBuffering(){
-
     }
 
     function onPlayerStateEnded(){
@@ -417,86 +368,52 @@ var nightingalePlayer = (function() {
     * nightingalePlayer Functions
     ******************************************************************************/
 
-    // Get, format & insert available quality levels for the player control
-    function updateAvailableQualityUI(qualityLevel){
-
-      // Loop through available qualities
-      $.each(qualityLevel, function(index, value){
-
-          var subStr = "hd",
-              caseMatches = ['large', 'medium', 'small', 'tiny', 'auto'],
-              outputValue;
-
-          // On looping through each available quality, if value begins with hd...
-          if (value.substring(0, subStr.length) === subStr) {
-
-            // Remove it from the string and store in outputValue
-            outputValue = (value.replace(subStr, "")) + 'HD';
-
-          // Else if value matches any of the caseMatches ('large', 'medium', 'small' etc)
-          }else if(caseMatches.indexOf(value) > -1){
-
-            // Then set outputValue to new appropiate string value.
-            switch (value) {
-              case 'large':
-                outputValue = '480p';
-                break;
-              case 'medium':
-                outputValue = '360p';
-                break;
-              case 'small':
-                outputValue = '240p';
-                break;
-              case 'tiny':
-                outputValue = '144p';
-                break;
-              case 'auto':
-                outputValue = 'Auto';
-                break;
-              default:
-                outputValue = value;
-                break;
-            }
-
-          }else{
-              // Else it is what it is..
-              outputValue = value;
-          }
-          // Insert li element into display list. Add the display values to the elem id and data attr. outputValue is displayed to user.
-          s.$controlsList.append('<li id="controls__video_quality__'+ value +'" data-quality="'+ value +'">'+ outputValue +'</li>').find('li:eq('+ index +')').on('click', onQualitySelect);
-      });
-    }
-
-    // Update quality display in the UI
-    function updateQualityDisplay(previousQualityState, currentQualityState){
-
-      var _videoControl = '#controls__video_quality__',
-      _cssProp = 'color';
-
-      $(_videoControl+previousQualityState).css(_cssProp, s.colorTheme.primary);
-      $(_videoControl+currentQualityState).css(_cssProp, s.colorTheme.secondary);
-    }
-
     // Update played bar (coloured bar behind the thumb slider) on updateTimer tick & seek bar change event
     function updatePlayedBar(x) {
 
-      var position = x - s.$playerSeekSlider.offset().left; // Click position
-      var percentage = 100 * position / s.$playerSeekSlider.width();
+      var _position = x - s.$playerSeekSlider.offset().left, // Click position
+          _percentage = 100 * _position / s.$playerSeekSlider.width(),
+          _seekValue = totalDuration * _percentage / 100;
 
       // Check within range
-      if(percentage > 100) {
-          percentage = 100;
+      if(_percentage > 100) {
+          _percentage = 100;
       }
-      if(percentage < 0) {
-          percentage = 0;
+      if(_percentage < 0) {
+          _percentage = 0;
       }
 
       // Update played bar
-      s.$playedBar.css('width', percentage+'%');
+      s.$playedBar.css('width', _percentage+'%');
 
       // Seek to new current position
-      var seekValue = totalDuration * percentage / 100;
-      ytp.seekTo(seekValue);
+      ytp.seekTo(_seekValue);
+    }
+
+    function updateVolumeBar(x){
+
+      var _position = x - s.$volTrack.offset().left,
+          _percentage = 100 * _position / s.$volTrack.width(),
+          _volume = Math.round(_percentage);
+
+      // Check within range
+      if(_percentage > 100) {
+          _percentage = 100;
+      }
+      if(_percentage < 0) {
+          _percentage = 0;
+      }
+
+      if (_volume !== 0) {
+        ytp.unMute();
+        ytp.setVolume(_volume);
+        s.$muteToggleBtn.addClass('active');
+      } else if (_volume === 0) {
+        ytp.mute();
+        s.$muteToggleBtn.removeClass('active');
+      }
+
+      s.$volSlider.css('width', _percentage+'%');
     }
 
     // Fullscreen handler

@@ -136,46 +136,54 @@ div.volume {
   width: 0px;
   margin: {
     right: 12px;
-    top: 7px;
+    top: 14px;
   }
-  input[type=range]::-webkit-slider-runnable-track {
-    height: 2px;
-    background-color: $accent;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    height: 12px;
-    width: 12px;
-    top: 6px;
+  // input[type=range]::-webkit-slider-runnable-track {
+  //   height: 2px;
+  //   background-color: $accent;
+  // }
+  // input[type=range]::-webkit-slider-thumb {
+  //   height: 12px;
+  //   width: 12px;
+  //   top: 6px;
+  // }
+  .volume__track{
+
+    width: 100%;
+    height: 15px;
+    cursor: pointer;
+
+    .volume__track__bar{
+      position: relative;
+      left: 0;
+      top: 7px;
+      height: 2px;
+      width: 100%;
+      background-color: $accent;
+    }
+
+    .volume__track__slider{
+
+      position: relative;
+      top: 5px;
+      width: 0%;
+      height: 2px;
+
+      .volume__track__thumb{
+        position: absolute;
+        top: -5px;
+        right: -12px;
+        height: 12px;
+        width: 12px;
+        background: #ffffff;
+        border-radius: 9999px;
+        -webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+        box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+      }
+    }
   }
   &.active {
     display: inline-block;
-  }
-}
-
-// anims.scss
-
-// ripple effect
-
-.controls__control {
-  position: relative;
-  text-align: center;
-/*  .icon {
-    position: relative;
-    top: 7px;
-    z-index: 3;
-    height: 20px;
-    width: 20px;
-  }*/
-  .ripple {
-    //opacity: 0.5;
-    z-index: 2;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform:translate(-50%, -50%);
-    border-radius: 100%;
-    height: 0%;
-    width: 0%;
-    background-color: #fff;
   }
 }
