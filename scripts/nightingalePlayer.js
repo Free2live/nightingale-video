@@ -149,11 +149,17 @@ var nightingalePlayer = (function() {
     // YouTube player ready
     function onPlayerReady(event){
 
+      // Get player volume
+      var _volume = ytp.getVolume();
+
       // Bind custom events
       bindCustomEvents();
 
       // Get current video duration
       totalDuration = ytp.getDuration();
+
+      // Set up volume slider
+      s.$volSlider.css('width', _volume+'%');
 
       // Set YouTube player to default quality state for appropriate playback quality
       event.target.setPlaybackQuality('default');
