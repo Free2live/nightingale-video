@@ -15,8 +15,8 @@ div.controls--social {
       transform: rotateY(360deg);
     }
   }
-  #appl {
-    width: 70px;
+  .store-link {
+    width: auto;
     display: inline-block;
     margin: 7px 12px 5px 0;
     &:hover {
