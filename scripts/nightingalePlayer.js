@@ -62,6 +62,9 @@ if (!isMobile.any()) {
   }
 }else{
   $('#mobile-overlay').css('display', 'table');
+  $('.overlays').css('display', 'none');
+  $('#texture-overlay').css('display', 'none');
+  $('html').css('overflow', 'visible').find('body').css('overflow', 'visible');
 }
 
 function browserCanLoadVideo() {
