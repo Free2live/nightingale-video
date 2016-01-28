@@ -18,13 +18,20 @@ if (!mobileCheck()) {
     });
   } else {
     // Display overlay if 360 not supported.
-    $('#disabled-overlay').css('display', 'table');
-    $('#disabled-overlay__inner a').on('click', function(){
-      $('#disabled-overlay__modal').show();
+
+    var _disabledOuter = $('#disabled-overlay'),
+        _disabledInner =   $('#disabled-overlay__inner'),
+        _message = _disabledInner.find('#disabled-overlay__inner__message'),
+        _modal = $('#disabled-overlay__modal');
+
+    _disabledOuter.css('display', 'table');
+    _disabledInner.find('a').on('click', function(){
+      _message.hide();
+      _modal.show();
     });
-    $('.disabled-overlay__modal__close').on('click', function(){
-      console.log('close click');
+    _modal.find('span').on('click', function(){
         $(this).parent().hide();
+        _message.show();
     });
   }
 }
