@@ -89,6 +89,9 @@
   }
   #mobile-overlay__upper {
     margin-bottom: 30px;
+    p {
+      margin-left: 3px; // correct misalign
+    }
   }
   #mobile-overlay__lower {
     button {
