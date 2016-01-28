@@ -61,9 +61,9 @@ if (!isMobile.any()) {
     });
   }
 }else{
+  // Display the mobile overlay
   $('#mobile-overlay').css('display', 'table');
-  $('.overlays').css('display', 'none');
-  $('#texture-overlay').css('display', 'none');
+  // Set overflow-y to visible for mobile scrolling
   $('html').css('overflow', 'visible').find('body').css('overflow', 'visible');
 }
 
@@ -109,6 +109,7 @@ var nightingalePlayer = (function() {
       // Player settings
       settings = {
         // Define player elements
+        $playerOverlays: $('.player-overlay'),
         $endFrameWrapper: $('#endframe-overlay-wrapper'),
         $playerEndframe: $('#endframe-overlay'),
         $allControlsWrapper: $('.controls'),
@@ -193,6 +194,9 @@ var nightingalePlayer = (function() {
             'onStateChange': onPlayerStateChange
           }
         });
+
+        // Fade up the player overlays
+        s.$playerOverlays.fadeIn();
 
       }else{
         // Throw an error if no target div found.
