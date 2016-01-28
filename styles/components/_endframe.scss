@@ -23,7 +23,7 @@
         position: relative;
         height: $overlay__controls__circle-diameter;
         width: $overlay__controls__circle-diameter;
-        animation: opacity 1s ease-in;
+        animation: opacity 0.7s ease-in;
         .endframe-overlay__circle__innerbox {
           width: 100%;
           height: 100%;
@@ -40,7 +40,7 @@
           left: 0;
         }
         .endframe-overlay__circle__text {
-          transition: all 0.2s ease-in-out;
+          transition: all 0.4s ease-in;
           width: 100%;
           height: auto;
           padding: 33% 10%;
@@ -146,7 +146,6 @@
               font-weight: normal;
               font-size: 15px;
               letter-spacing: 3px;
-
             }
           }
           img {
