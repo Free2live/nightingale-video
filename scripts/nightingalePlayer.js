@@ -19,11 +19,11 @@ if (!mobileCheck()) {
 
     // Show the overlay
     _disabledOuter.css('display', 'table');
-
     // Bind events
     _disabledInner.find('a').on('click', function(){
       _modal.toggleClass('active');
       _message.toggleClass('active');
+      return false;
     });
     _modal.find('span').on('click', function(){
       _modal.toggleClass('active');
