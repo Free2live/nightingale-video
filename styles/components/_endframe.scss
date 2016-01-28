@@ -139,10 +139,20 @@
           //display: none;
           opacity: 0;
           top: -20px;
+          .activetext {
+            position: relative;
+            top: 40px;
+            h2, p {
+              font-weight: normal;
+              font-size: 15px;
+              letter-spacing: 3px;
+              
+            }
+          }
           img {
             position: relative;
             z-index: 0;
-            height: 260px;
+            height: 285px;
             top: -120px;
           }
         }
