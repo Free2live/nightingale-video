@@ -16,7 +16,14 @@ if(browserCanLoadVideo()){
   });
 }else{
   // Display overlay if 360 not supported.
-  $('#disabled-overlay').show();
+  $('#disabled-overlay').css('display', 'table');
+  $('#disabled-overlay__inner a').on('click', function(){
+    $('#disabled-overlay__modal').show();
+  });
+  $('.disabled-overlay__modal__close').on('click', function(){
+    console.log('close click');
+      $(this).parent().hide();
+  });
 }
 /***************************************************
   Browser sniffage
