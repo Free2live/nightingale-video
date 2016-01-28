@@ -54,8 +54,8 @@ var nightingalePlayer = (function() {
       // Player settings
       settings = {
         // Define player elements
-        // $playerWrapper: $('#nightingalePlayer'),
         $playerElem: $('#nightingalePlayer__player'),
+        $endFrameWrapper: $('#endframe-overlay-wrapper'),
         $playerEndframe: $('#endframe-overlay'),
         $allControlsWrapper: $('.controls'),
         $standardPlayerControls: $('.controls__standard'),
@@ -76,7 +76,7 @@ var nightingalePlayer = (function() {
         },
         // Overridable default settings
         defaults: {
-          videoKey: 'aQd41nbQM-U',
+          videoKey: 'Mnf15KwPV-Q',
           disabledBrowsersKey: 'blpe_sGnnP4'
         },
         // YouTube Api params
@@ -105,8 +105,6 @@ var nightingalePlayer = (function() {
     function init(options){
 
       if(window.innerWidth > 760){
-
-        console.log('init');
 
         s = settings;
         s.initSettingsChildren();
@@ -184,8 +182,6 @@ var nightingalePlayer = (function() {
     // YouTube player ready
     function onPlayerReady(event){
 
-      console.log('player ready');
-
       // Set current video duration
       totalDuration = ytp.getDuration();
       // Get the current volume
@@ -198,8 +194,6 @@ var nightingalePlayer = (function() {
       event.target.setPlaybackQuality('default');
       // Bind custom events
       bindCustomEvents();
-      // Fade the player up
-      // s.$playerWrapper.fadeIn(3000);
     }
 
     function onPlayerStateChange (event){
@@ -310,7 +304,6 @@ var nightingalePlayer = (function() {
 
     // On POSTER fade out COMPLETE
     function onEndframeFadeOutComplete(){
-      // s.$playerWrapper.fadeIn(3000);
       ytp.playVideo();
     }
 
@@ -377,16 +370,15 @@ var nightingalePlayer = (function() {
       }, 400);
 
       // Hide the endframe if it is visible and the video starts playing
-      if (s.$playerEndframe.is(':visible')) {
-        s.$playerEndframe.hide();
-        // s.$playerWrapper.show();
+      if (s.$endFrameWrapper.is(':visible')) {
+        s.$endFrameWrapper.hide();
       }
     }
 
     function onPlayerStateEnded(){
       // show the end frame, hide player behind it.
-      s.$playerEndframe.show();
-      // s.$playerWrapper.hide();
+      s.$endFrameWrapper.show();
+      s.$playerEndframe.fadeIn(1000);
 
       // Set played bar to end position
       s.$playedBar.css('width', '100%');
