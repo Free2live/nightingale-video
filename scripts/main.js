@@ -6,8 +6,7 @@
   nightingaleYTDeferred.done(function(YT) {
 
     // nightingalePlayer.init({
-    //   videoKey: 'aQd41nbQM-U',
-    //   disabledBrowsersKey: 'blpe_sGnnP4'
+    //   videoKey: 'aQd41nbQM-U'
     // });
 
     nightingalePlayer.init();
