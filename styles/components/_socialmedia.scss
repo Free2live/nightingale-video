@@ -19,6 +19,9 @@ div.controls--social {
     width: 70px;
     display: inline-block;
     margin: 7px 12px 5px 0;
+    &:hover {
+      background-color: #242424;
+    }
   }
 }
 
