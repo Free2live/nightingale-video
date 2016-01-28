@@ -42,8 +42,8 @@
         .endframe-overlay__circle__text {
           transition: all 0.4s ease-in;
           width: 100%;
-          height: auto;
-          padding: 33% 10%;
+          height: 330px;
+          padding: 33% 10% 0 10%;
           margin: 0 auto;
           display: block;
           text-align: center;
@@ -70,6 +70,7 @@
           height: auto;
         }
         .endframe-overlay__circle__buttons {
+          transition: all 0.4s ease-in-out;
           position: absolute;
           bottom: 28%;
           width: $overlay__controls__circle-diameter;
@@ -138,7 +139,7 @@
         .circ-active {
           transition: all 0.4s ease-in-out;
           opacity: 0;
-          top: -20px;
+          //top: -20px;
           .activetext {
             position: relative;
             top: 40px;
@@ -158,11 +159,11 @@
         &:hover {
           .circ-default {
             opacity: 0;
-            top: -20px;
+            //top: -20px;
           }
           .circ-active {
             opacity: 1;
-            top: 0px;
+            //top: 0px;
           }
         }
       }
