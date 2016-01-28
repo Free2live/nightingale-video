@@ -515,6 +515,7 @@ var nightingalePlayer = (function() {
       }
     }
 
+    // Return public
     return {
       init: init
     };
