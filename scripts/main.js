@@ -7,7 +7,7 @@
 
     // nightingalePlayer.init({
     //   videoKey: 'aQd41nbQM-U',
-    //   oldBrowsersKey: 'blpe_sGnnP4'
+    //   disabledBrowsersKey: 'blpe_sGnnP4'
     // });
 
     nightingalePlayer.init();

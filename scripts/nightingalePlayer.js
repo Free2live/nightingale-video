@@ -6,7 +6,7 @@ window.onYouTubeIframeAPIReady = function() {
 };
 
 // YouTube API ajax call
-$.getScript( "https://www.youtube.com/player_api")
+$.getScript( "https://www.youtube.com/iframe_api")
   .done(function(script, textStatus) {
 });
 
@@ -30,11 +30,13 @@ function browserCanLoadVideo() {
   var isSafari = /constructor/i.test(window.HTMLElement);
   // ie >= 10
   var isIE = window.navigator.msPointerEnabled;
+  // ie 6-10
+  var isOldIE = !!window.ActiveXObject;
 
   if ((isChromium) || (isFF) || (isOpera)) {
     return true;
   }
-  if (isSafari || isIE) {
+  if (isSafari || isIE || isOldIE) {
     return false;
   }
   return false;
@@ -52,7 +54,7 @@ var nightingalePlayer = (function() {
       // Player settings
       settings = {
         // Define player elements
-        $playerWrapper: $('#nightingalePlayer'),
+        // $playerWrapper: $('#nightingalePlayer'),
         $playerElem: $('#nightingalePlayer__player'),
         $playerEndframe: $('#endframe-overlay'),
         $allControlsWrapper: $('.controls'),
@@ -75,7 +77,7 @@ var nightingalePlayer = (function() {
         // Overridable default settings
         defaults: {
           videoKey: 'aQd41nbQM-U',
-          oldBrowsersKey: 'blpe_sGnnP4'
+          disabledBrowsersKey: 'blpe_sGnnP4'
         },
         // YouTube Api params
         playerWidth: '100%',
@@ -104,6 +106,8 @@ var nightingalePlayer = (function() {
 
       if(window.innerWidth > 760){
 
+        console.log('init');
+
         s = settings;
         s.initSettingsChildren();
 
@@ -123,7 +127,7 @@ var nightingalePlayer = (function() {
           ytp = new YT.Player(s.$playerElem.attr('id'), {
               width: s.playerWidth,
               height: s.playerHeight,
-              videoId: (browserCanLoadVideo()) ? s.defaults.videoKey : s.defaults.oldBrowsersKey,
+              videoId: (browserCanLoadVideo()) ? s.defaults.videoKey : s.defaults.disabledBrowsersKey,
               playerVars: {
               autoplay: s.autoPlay,
               enablejsapi: s.enableYouTubeApi,
@@ -180,6 +184,8 @@ var nightingalePlayer = (function() {
     // YouTube player ready
     function onPlayerReady(event){
 
+      console.log('player ready');
+
       // Set current video duration
       totalDuration = ytp.getDuration();
       // Get the current volume
@@ -193,7 +199,7 @@ var nightingalePlayer = (function() {
       // Bind custom events
       bindCustomEvents();
       // Fade the player up
-      s.$playerWrapper.fadeIn(3000);
+      // s.$playerWrapper.fadeIn(3000);
     }
 
     function onPlayerStateChange (event){
@@ -304,7 +310,7 @@ var nightingalePlayer = (function() {
 
     // On POSTER fade out COMPLETE
     function onEndframeFadeOutComplete(){
-      s.$playerWrapper.fadeIn(3000);
+      // s.$playerWrapper.fadeIn(3000);
       ytp.playVideo();
     }
 
@@ -373,14 +379,14 @@ var nightingalePlayer = (function() {
       // Hide the endframe if it is visible and the video starts playing
       if (s.$playerEndframe.is(':visible')) {
         s.$playerEndframe.hide();
-        s.$playerWrapper.show();
+        // s.$playerWrapper.show();
       }
     }
 
     function onPlayerStateEnded(){
       // show the end frame, hide player behind it.
       s.$playerEndframe.show();
-      s.$playerWrapper.hide();
+      // s.$playerWrapper.hide();
 
       // Set played bar to end position
       s.$playedBar.css('width', '100%');
