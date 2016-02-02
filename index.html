@@ -20,6 +20,23 @@
         <script src="scripts/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
     </head>
     <body>
+      <script>
+         window.fbAsyncInit = function() {
+           FB.init({
+             appId      : '1581713375417403',
+             xfbml      : true,
+             version    : 'v2.5'
+           });
+         };
+
+         (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+          }(document, 'script', 'facebook-jssdk'));
+       </script>
       <div id="mobile-overlay">
         <div id="mobile-overlay__inner">
           <div id="mobile-overlay__upper">
@@ -28,7 +45,7 @@
             <img src="images/sigma-lockup.png" alt="Sigma - Nightingale Ft Callum Beattie" class="mobile-image-sigma">
           </div>
           <div id="mobile-overlay__lower">
-            <a href="https://www.youtube.com/watch?v=Mnf15KwPV-Q">
+            <a href="https://www.youtube.com/watch?v=aQd41nbQM-U">
               <button>Watch 360&deg; video<br/> in YouTube app</button>
             </a>
             <a href="https://www.libratone.com/uk/products/libratone-zipp">Meet our 360&deg; speaker</a>
@@ -73,8 +90,8 @@
                   </div>
                   <img class="svg-outer"  src="images/endframe/circle__outer.svg" alt="">
                   <div class="endframe-overlay__circle__buttons">
-                    <a href="https://www.facebook.com/libratone/" target="_blank"><div class="endframe-overlay__circle__buttons--btn fb"><img src="images/icons/social--facebook.svg" alt=""></div></a>
-                    <a href="https://twitter.com/libratone" target="_blank"><div class="endframe-overlay__circle__buttons--btn twit"><img src="images/icons/social--twitter.svg" alt=""></div></a>
+                    <a class="facebook-share" href="https://www.facebook.com/libratone/" target="_blank"><div class="endframe-overlay__circle__buttons--btn fb"><img src="images/icons/social--facebook.svg" alt="Share on Facebook"></div></a>
+                    <a href="http://twitter.com/intent/tweet?status=Twitter+share+desc" target="_blank"><div class="endframe-overlay__circle__buttons--btn twit"><img src="images/icons/social--twitter.svg" alt="Share on Twitter"></div></a>
                   </div>
                 </div>
                 <a href="https://www.libratone.com/uk/products/libratone-zipp" target="_blank">
@@ -123,7 +140,7 @@
                     </a>
                   </div>
                   <a id="libra-link" href="https://www.libratone.com/uk/products/libratone-zipp" target="_blank" title="Meet 360&deg; Sound">
-                    <span class="visible-md-inline-block visible-lg-inline-block"><img class="libra-slogan" src="images/MEET OUR 360 SPEAKER.png" alt="Meet 360&deg; Sound"></span>
+                    <span id="libra-link__copy-line" class="visible-md-inline-block visible-lg-inline-block">Meet 360&deg; Sound</span>
                     <span id="libra-link__z-icon" class="hidden-xs"><img src="images/icons/icon-speaker-updated.svg" alt="Meet our 360&deg; speaker"></span>
                   </a>
               </div>
@@ -165,12 +182,12 @@
                       <img src="images/icons/social--apple-music.png" alt="Apple music">
                     </div>
                   </a>
-                  <a class="facebook-share" href="#" target="_blank">
+                  <a class="facebook-share" target="_blank">
                     <div class="controls__standard controls__standard--share-facebook" id="fb">
                       <img src="images/icons/social--facebook.svg" alt="Facebook">
                     </div>
                   </a>
-                  <a class="twitter-share" href="#" target="_blank">
+                  <a class="twitter-share" href="http://twitter.com/intent/tweet?status=Twitter+share+desc" target="_blank">
                     <div class="controls__standard controls__standard--share-twitter" id="twitter">
                       <img src="images/icons/social--twitter.svg" alt="Twitter">
                     </div>

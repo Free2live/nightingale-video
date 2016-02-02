@@ -115,6 +115,7 @@ var nightingalePlayer = (function() {
         $facebookShareBtn: $('.facebook-share'),
         $twitterShareBtn: $('.twitter-share'),
         $playerSeekSlider: $('.seekslider'),
+        $playerSeekSliderThumb: $('.seekslider__thumb'),
         $playedBar: $('.seekslider__played'),
         thumbDragging: false,
         $volContainer: $('.volume'),
@@ -137,6 +138,12 @@ var nightingalePlayer = (function() {
         showPlayerInfo: 0,
         showRelatedContent: 0,
         enableModestBranding: 1,
+        // Sharing info
+        shareMethod: 'feed',
+        shareName: 'Nightingale 360',
+        shareLink: 'http://www.nightingale360.com',
+        shareDesc: 'Description',
+        shareImage: 'http://static01.nyt.com/images/2015/02/19/arts/international/19iht-btnumbers19A/19iht-btnumbers19A-facebookJumbo-v2.jpg',
 
         initSettingsChildren: function() {
           // Settings that need sibling reference
@@ -317,6 +324,14 @@ var nightingalePlayer = (function() {
     // On FACEBOOK button CLICK
     function onFacebookShareClick(){
       // Facebook sharing functionality
+      FB.ui({
+          method: s.shareMethod,
+          link: s.shareLink,
+          picture: s.shareImage,
+          name: s.shareName,
+          description: s.shareDesc
+        }
+      );
     }
 
     function onTwitterShareClick(){
